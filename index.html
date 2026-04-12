@@ -115,7 +115,7 @@
 
     .secoes {
       max-width: 1100px;
-      margin: 30px auto 50px;
+      margin: 30px auto;
       padding: 20px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -160,6 +160,44 @@
       background: #16a34a;
     }
 
+    .ficha-section {
+      max-width: 1200px;
+      margin: 20px auto 50px;
+      padding: 20px;
+    }
+
+    .ficha-box {
+      background: #111111;
+      border: 1px solid #22c55e;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    }
+
+    .ficha-topo {
+      padding: 18px 20px;
+      border-bottom: 1px solid #22c55e;
+      background: #0d0d0d;
+    }
+
+    .ficha-topo h2 {
+      color: #22c55e;
+      margin-bottom: 8px;
+    }
+
+    .ficha-topo p {
+      color: #e5e7eb;
+      line-height: 1.5;
+    }
+
+    .ficha-frame {
+      width: 100%;
+      height: 1200px;
+      border: none;
+      background: #000;
+      display: block;
+    }
+
     footer {
       background: #0a0a0a;
       color: white;
@@ -169,7 +207,7 @@
       border-top: 1px solid #22c55e;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
       header h1 {
         font-size: 1.6rem;
       }
@@ -178,12 +216,8 @@
         font-size: 1.5rem;
       }
 
-      nav {
-        padding: 12px;
-      }
-
-      nav a {
-        font-size: 0.95rem;
+      .ficha-frame {
+        height: 900px;
       }
     }
   </style>
@@ -210,7 +244,7 @@
     <div class="botoes">
       <a class="botao" href="jornada.html">Abrir Jornada</a>
       <a class="botao" href="apoiadores.html">Ver Apoiadores</a>
-      <a class="botao" href="https://eigonlucianof-dev.github.io/jornada_ficha_treinador/" target="_blank" rel="noopener noreferrer">Ficha de Treinador</a>
+      <a class="botao" href="ferramentas.html">Abrir Ferramentas</a>
     </div>
   </section>
 
@@ -232,11 +266,22 @@
       <p>Espaço reservado para nomes, créditos e agradecimentos.</p>
       <a href="apoiadores.html">Acessar</a>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>Ficha de Treinador</h3>
-      <p>Abra a ficha do treinador para preencher, salvar e organizar os dados da jornada.</p>
-      <a href="https://eigonlucianof-dev.github.io/jornada_ficha_treinador/" target="_blank" rel="noopener noreferrer">Acessar</a>
+  <section class="ficha-section">
+    <div class="ficha-box">
+      <div class="ficha-topo">
+        <h2>Ficha de Treinador</h2>
+        <p>
+          A ficha fica visível diretamente na página inicial. Se preferir, depois você também pode criar um botão separado para abrir em tela própria.
+        </p>
+      </div>
+
+      <iframe
+        class="ficha-frame"
+        src="https://eigonlucianof-dev.github.io/jornada_ficha_treinador/"
+        title="Ficha de Treinador - Jornada Deslumbrante">
+      </iframe>
     </div>
   </section>
 

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptador de Movimentos - Pokémon Jornada Deslumbrante</title>
+  <style>
+    :root {
+      --preto: #0a0a0a;
+      --preto-suave: #141414;
+      --verde: #1fa34a;
+      --verde-escuro: #127536;
+      --amarelo: #e3c53a;
+      --branco: #f5f5f5;
+      --cinza: #bdbdbd;
+      --borda: #2a2a2a;
+      --vermelho: #8d1f1f;
+      --vermelho-escuro: #6e1717;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 20px;
+      background: var(--preto);
+      color: var(--branco);
+    }
+
+    h1, h2 {
+      margin-bottom: 10px;
+      color: var(--branco);
+    }
+
+    .subtitulo {
+      color: var(--amarelo);
+      margin-top: -5px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .box {
+      background: var(--preto-suave);
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+      color: var(--branco);
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 11px;
+      margin-top: 6px;
+      border: 1px solid #3a3a3a;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background: #101010;
+      color: var(--branco);
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 2px rgba(31,163,74,0.25);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      font-weight: bold;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.97;
+    }
+
+    .primary {
+      background: var(--verde);
+      color: white;
+      margin-top: 18px;
+    }
+
+    .primary:hover {
+      background: var(--verde-escuro);
+    }
+
+    .secondary {
+      background: var(--amarelo);
+      color: #111;
+      margin-top: 8px;
+    }
+
+    .secondary:hover {
+      background: #caae30;
+    }
+
+    .dark-btn {
+      background: #242424;
+      color: var(--branco);
+      margin-top: 8px;
+      border: 1px solid #383838;
+    }
+
+    .danger {
+      background: var(--vermelho);
+      color: white;
+      margin-top: 10px;
+    }
+
+    .danger:hover {
+      background: var(--vermelho-escuro);
+    }
+
+    .edit-btn {
+      background: #1c1c1c;
+      color: var(--amarelo);
+      margin-top: 10px;
+      border: 1px solid #3a3a3a;
+    }
+
+    .edit-btn:hover {
+      background: #262626;
+    }
+
+    .cancel-btn {
+      background: #2b2b2b;
+      color: white;
+      margin-top: 10px;
+      border: 1px solid #444;
+    }
+
+    .cancel-btn:hover {
+      background: #353535;
+    }
+
+    .result {
+      background: #101010;
+      border-left: 6px solid var(--amarelo);
+      padding: 14px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      color: var(--branco);
+    }
+
+    .card {
+      border: 1px solid #303030;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 12px;
+      background: #0f0f0f;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--cinza);
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .topo {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #202020;
+    }
+
+    .topo h1 {
+      margin-bottom: 6px;
+      font-size: 2rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #171717;
+      border: 1px solid #2d2d2d;
+      color: var(--amarelo);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .modo-edicao {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(227, 197, 58, 0.10);
+      border: 1px solid rgba(227, 197, 58, 0.35);
+      color: var(--amarelo);
+      display: none;
+      font-weight: bold;
+    }
+
+    input[type="file"] {
+      background: transparent;
+      border: 1px dashed #3c3c3c;
+      padding: 12px;
+    }
+
+    @media (max-width: 800px) {
+      .grid, .actions-grid, .card-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topo">
+    <h1>Adaptador de Movimentos</h1>
+    <div class="subtitulo">Pokémon Jornada Deslumbrante</div>
+    <span class="tag">Entre Dados e Vitórias</span>
+  </div>
+
+  <div class="box">
+    <h2>Como a adaptação funciona</h2>
+    <div class="small">
+      <p><strong>Distância:</strong> movimentos físicos tendem a ser curtos. Movimentos especiais tendem a ser longos.</p>
+      <p><strong>Impacto:</strong> o poder do golpe é convertido em impacto baixo, normal ou alto.</p>
+      <p><strong>Atributos:</strong> quando o efeito diz que aumenta ou diminui um atributo, a mudança será de <strong>1 ponto</strong>.</p>
+      <p><strong>Chance de efeito extra:</strong> sempre que a descrição disser que há uma chance de causar algo, isso será convertido para <strong>efeito extra em acerto crítico</strong>.</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Criar movimento adaptado</h2>
+
+    <div id="modoEdicao" class="modo-edicao">
+      Você está editando um movimento salvo.
+    </div>
+
+    <label for="nome">Nome do movimento</label>
+    <input type="text" id="nome" placeholder="Ex: Cauda de Ferro" />
+
+    <div class="grid">
+      <div>
+        <label for="tipo">Tipo do movimento</label>
+        <select id="tipo">
+          <option>Normal</option>
+          <option>Fogo</option>
+          <option>Água</option>
+          <option>Elétrico</option>
+          <option>Planta</option>
+          <option>Gelo</option>
+          <option>Lutador</option>
+          <option>Veneno</option>
+          <option>Terrestre</option>
+          <option>Voador</option>
+          <option>Psíquico</option>
+          <option>Inseto</option>
+          <option>Pedra</option>
+          <option>Fantasma</option>
+          <option>Dragão</option>
+          <option>Sombrio</option>
+          <option>Aço</option>
+          <option>Fada</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="classeOriginal">Classe original do golpe</label>
+        <select id="classeOriginal">
+          <option value="fisico">Físico</option>
+          <option value="especial">Especial</option>
+          <option value="status">Status</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label for="categoria">Movimento</label>
+        <select id="categoria">
+          <option value="ofensivo">Ofensivo</option>
+          <option value="defensivo">Defensivo</option>
+          <option value="status">Status</option>
+          <option value="controle">Controle</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="poder">Poder do movimento (0 a 200)</label>
+        <input type="number" id="poder" min="0" max="200" value="40" />
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label for="contato">Faz contato?</label>
+        <select id="contato">
+          <option value="nao">Não</option>
+          <option value="sim">Sim</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="especialRaro">É um movimento especial?</label>
+        <select id="especialRaro">
+          <option value="nenhum">Comum</option>
+          <option value="zmove">Movimento Z</option>
+          <option value="gmax">Movimento GMAX</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="efeito">Efeito / O que o movimento faz na cena</label>
+    <textarea id="efeito" placeholder="Ex: A cauda do pokémon se torna aço, causando dano e diminuindo a defesa do alvo."></textarea>
+
+    <button id="botaoPrincipal" class="primary" onclick="processarMovimento()">Adaptar movimento</button>
+    <button id="botaoCancelarEdicao" class="cancel-btn" onclick="cancelarEdicao()" style="display:none;">Cancelar edição</button>
+  </div>
+
+  <div class="box">
+    <h2>Resultado</h2>
+    <div id="resultado" class="result">Nenhum movimento adaptado ainda.</div>
+    <div class="actions-grid">
+      <button class="secondary" onclick="salvarUltimoMovimento()">Salvar último movimento</button>
+      <button class="dark-btn" onclick="exportarJSON()">Exportar movimentos em JSON</button>
+      <button class="dark-btn" onclick="limparTudo()">Limpar todos os salvos</button>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Importar movimentos em JSON</h2>
+    <input type="file" id="importarArquivo" accept=".json" />
+    <button class="secondary" onclick="importarJSON()">Importar JSON</button>
+    <div class="small" style="margin-top:10px;">
+      Use isso para recuperar ou compartilhar seus movimentos salvos.
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Movimentos salvos</h2>
+    <div id="listaSalvos"></div>
+  </div>
+
+  <script>
+    let ultimoMovimentoGerado = null;
+    let idEmEdicao = null;
+
+    function detectarImpacto(poder, especialRaro) {
+      let impacto = "Baixo";
+
+      if (poder >= 90) impacto = "Alto";
+      else if (poder >= 45) impacto = "Normal";
+
+      if (especialRaro === "zmove" || especialRaro === "gmax") {
+        impacto = "Alto";
+      }
+
+      return impacto;
+    }
+
+    function detectarDistancia(classeOriginal, categoria, contato, efeitoTexto) {
+      const texto = efeitoTexto.toLowerCase();
+
+      const palavrasLonga = [
+        "dispara", "lança", "atira", "projétil", "raio", "onda",
+        "explosão", "feixe", "bola", "pulso", "arremessa", "distância",
+        "jato", "rajada"
+      ];
+
+      const palavrasCurta = [
+        "golpeia", "morde", "corta", "investida", "cabeçada", "chute",
+        "soco", "agarra", "colide", "encosta", "cauda", "garras", "presas"
+      ];
+
+      const indicioLonga = palavrasLonga.some(p => texto.includes(p));
+      const indicioCurta = palavrasCurta.some(p => texto.includes(p));
+
+      if (categoria === "defensivo") return "Curta";
+
+      if (classeOriginal === "especial") return "Longa";
+
+      if (classeOriginal === "fisico" && contato === "sim") return "Curta";
+
+      if (classeOriginal === "fisico" && contato === "nao") {
+        if (indicioLonga) return "Longa";
+        return "Curta";
+      }
+
+      if (classeOriginal === "status") {
+        if (indicioLonga) return "Longa";
+        if (indicioCurta) return "Curta";
+        if (categoria === "controle") return "Longa";
+        return "Curta";
+      }
+
+      return "Curta";
+    }
+
+    function capitalizar(texto) {
+      return texto.charAt(0).toUpperCase() + texto.slice(1);
+    }
+
+    function extrairAlteracoesDeAtributo(textoOriginal) {
+      const texto = textoOriginal.toLowerCase();
+      const resultados = [];
+
+      const atributos = [
+        { chaves: ["ataque especial"], nome: "Ataque Especial" },
+        { chaves: ["defesa especial"], nome: "Defesa Especial" },
+        { chaves: ["resistência", "resistencia"], nome: "Resistência" },
+        { chaves: ["velocidade"], nome: "Velocidade" },
+        { chaves: ["precisão", "precisao"], nome: "Precisão" },
+        { chaves: ["evasão", "evasao"], nome: "Evasão" },
+        { chaves: ["ataque"], nome: "Ataque" },
+        { chaves: ["defesa"], nome: "Defesa" }
+      ];
+
+      atributos.forEach(attr => {
+        const encontrouAtributo = attr.chaves.some(ch => texto.includes(ch));
+        if (!encontrouAtributo) return;
+
+        if (texto.includes("aumenta") || texto.includes("eleva")) {
+          resultados.push(`Aumenta ${attr.nome} em 1 ponto.`);
+        }
+
+        if (texto.includes("diminui") || texto.includes("reduz") || texto.includes("abaixa")) {
+          resultados.push(`Diminui ${attr.nome} em 1 ponto.`);
+        }
+      });
+
+      return [...new Set(resultados)];
+    }
+
+    function extrairEfeitoCritico(textoOriginal) {
+      const texto = textoOriginal.toLowerCase();
+
+      if (!texto.includes("chance")) {
+        return null;
+      }
+
+      const efeitosComuns = [
+        { chaves: ["paralisar"], texto: "Em acerto crítico, paralisa o alvo." },
+        { chaves: ["queimar"], texto: "Em acerto crítico, causa queimadura no alvo." },
+        { chaves: ["congelar"], texto: "Em acerto crítico, congela o alvo." },
+        { chaves: ["confundir"], texto: "Em acerto crítico, confunde o alvo." },
+        { chaves: ["envenenar"], texto: "Em acerto crítico, envenena o alvo." },
+        { chaves: ["adormecer", "sono"], texto: "Em acerto crítico, coloca o alvo em sono." },
+        { chaves: ["amedrontar", "assustar", "recuar"], texto: "Em acerto crítico, desestabiliza o alvo." }
+      ];
+
+      for (const efeito of efeitosComuns) {
+        if (efeito.chaves.some(chave => texto.includes(chave))) {
+          return efeito.texto;
+        }
+      }
+
+      if (
+        texto.includes("chance") &&
+        (texto.includes("diminui") || texto.includes("reduz") || texto.includes("abaixa"))
+      ) {
+        const alteracoes = extrairAlteracoesDeAtributo(textoOriginal)
+          .map(item => item.replace(".", ""))
+          .map(item => `Em acerto crítico, ${item.charAt(0).toLowerCase() + item.slice(1)}.`);
+
+        if (alteracoes.length > 0) {
+          return alteracoes.join("\n");
+        }
+      }
+
+      return "Em acerto crítico, ativa o efeito extra descrito no movimento.";
+    }
+
+    function limparEfeitoBase(textoOriginal) {
+      return textoOriginal.trim().replace(/\s+/g, " ");
+    }
+
+    function montarMovimento(idExistente = null) {
+      const nome = document.getElementById("nome").value.trim();
+      const tipo = document.getElementById("tipo").value;
+      const classeOriginal = document.getElementById("classeOriginal").value;
+      const categoria = document.getElementById("categoria").value;
+      const poder = parseInt(document.getElementById("poder").value, 10);
+      const contato = document.getElementById("contato").value;
+      const especialRaro = document.getElementById("especialRaro").value;
+      const efeito = document.getElementById("efeito").value.trim();
+
+      if (!nome || !efeito || isNaN(poder)) {
+        document.getElementById("resultado").textContent =
+          "Preencha nome, poder e efeito antes de adaptar o movimento.";
+        return null;
+      }
+
+      const impacto = detectarImpacto(poder, especialRaro);
+      const distancia = detectarDistancia(classeOriginal, categoria, contato, efeito);
+      const alteracoes = extrairAlteracoesDeAtributo(efeito);
+      const efeitoCritico = extrairEfeitoCritico(efeito);
+      const efeitoBase = limparEfeitoBase(efeito);
+
+      let textoFinal = `Nome: ${nome}
+Tipo: ${tipo}
+Movimento: ${capitalizar(categoria)}
+Distância: ${distancia}
+Impacto: ${impacto}`;
+
+      if (especialRaro !== "nenhum") {
+        textoFinal += `\nNível especial: ${especialRaro === "zmove" ? "Movimento Z" : "Movimento GMAX"}`;
+      }
+
+      textoFinal += `\n\nEfeito:
+${efeitoBase}`;
+
+      if (alteracoes.length > 0) {
+        textoFinal += `\n\nAlterações de atributo:
+${alteracoes.join("\n")}`;
+      }
+
+      if (efeitoCritico) {
+        textoFinal += `\n\nEfeito crítico:
+${efeitoCritico}`;
+      }
+
+      return {
+        id: idExistente || Date.now(),
+        nome,
+        tipo,
+        classeOriginal,
+        categoria,
+        poder,
+        contato,
+        especialRaro,
+        movimento: capitalizar(categoria),
+        distancia,
+        impacto,
+        nivelEspecial: especialRaro === "nenhum" ? null : (especialRaro === "zmove" ? "Movimento Z" : "Movimento GMAX"),
+        efeito: efeitoBase,
+        alteracoesDeAtributo: alteracoes,
+        efeitoCritico: efeitoCritico,
+        texto: textoFinal
+      };
+    }
+
+    function processarMovimento() {
+      if (idEmEdicao !== null) {
+        atualizarMovimentoEditado();
+      } else {
+        adaptarMovimento();
+      }
+    }
+
+    function adaptarMovimento() {
+      const movimento = montarMovimento();
+
+      if (!movimento) return;
+
+      ultimoMovimentoGerado = movimento;
+      document.getElementById("resultado").textContent = movimento.texto;
+    }
+
+    function obterMovimentosSalvos() {
+      return JSON.parse(localStorage.getItem("movimentosRPG")) || [];
+    }
+
+    function salvarMovimentosSalvos(lista) {
+      localStorage.setItem("movimentosRPG", JSON.stringify(lista));
+    }
+
+    function salvarUltimoMovimento() {
+      if (!ultimoMovimentoGerado) {
+        alert("Adapte um movimento antes de salvar.");
+        return;
+      }
+
+      const salvos = obterMovimentosSalvos();
+      salvos.push(ultimoMovimentoGerado);
+      salvarMovimentosSalvos(salvos);
+      renderizarSalvos();
+      alert("Movimento salvo com sucesso.");
+    }
+
+    function editarMovimento(id) {
+      const salvos = obterMovimentosSalvos();
+      const movimento = salvos.find(m => m.id === id);
+
+      if (!movimento) {
+        alert("Movimento não encontrado.");
+        return;
+      }
+
+      document.getElementById("nome").value = movimento.nome || "";
+      document.getElementById("tipo").value = movimento.tipo || "Normal";
+      document.getElementById("classeOriginal").value = movimento.classeOriginal || "fisico";
+      document.getElementById("categoria").value = movimento.categoria || "ofensivo";
+      document.getElementById("poder").value = movimento.poder ?? 40;
+      document.getElementById("contato").value = movimento.contato || "nao";
+      document.getElementById("especialRaro").value = movimento.especialRaro || "nenhum";
+      document.getElementById("efeito").value = movimento.efeito || "";
+
+      idEmEdicao = id;
+      ultimoMovimentoGerado = movimento;
+
+      document.getElementById("resultado").textContent = movimento.texto || "Movimento carregado para edição.";
+      document.getElementById("modoEdicao").style.display = "block";
+      document.getElementById("botaoCancelarEdicao").style.display = "block";
+      document.getElementById("botaoPrincipal").textContent = "Atualizar movimento";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function atualizarMovimentoEditado() {
+      const movimentoAtualizado = montarMovimento(idEmEdicao);
+
+      if (!movimentoAtualizado) return;
+
+      let salvos = obterMovimentosSalvos();
+      const indice = salvos.findIndex(m => m.id === idEmEdicao);
+
+      if (indice === -1) {
+        alert("Não foi possível encontrar o movimento para atualizar.");
+        return;
+      }
+
+      salvos[indice] = movimentoAtualizado;
+      salvarMovimentosSalvos(salvos);
+
+      ultimoMovimentoGerado = movimentoAtualizado;
+      document.getElementById("resultado").textContent = movimentoAtualizado.texto;
+
+      renderizarSalvos();
+      sairModoEdicao();
+
+      alert("Movimento atualizado com sucesso.");
+    }
+
+    function cancelarEdicao() {
+      sairModoEdicao();
+      limparFormulario();
+      document.getElementById("resultado").textContent = "Edição cancelada.";
+    }
+
+    function sairModoEdicao() {
+      idEmEdicao = null;
+      document.getElementById("modoEdicao").style.display = "none";
+      document.getElementById("botaoCancelarEdicao").style.display = "none";
+      document.getElementById("botaoPrincipal").textContent = "Adaptar movimento";
+    }
+
+    function limparFormulario() {
+      document.getElementById("nome").value = "";
+      document.getElementById("tipo").value = "Normal";
+      document.getElementById("classeOriginal").value = "fisico";
+      document.getElementById("categoria").value = "ofensivo";
+      document.getElementById("poder").value = 40;
+      document.getElementById("contato").value = "nao";
+      document.getElementById("especialRaro").value = "nenhum";
+      document.getElementById("efeito").value = "";
+      ultimoMovimentoGerado = null;
+    }
+
+    function deletarMovimento(id) {
+      let salvos = obterMovimentosSalvos();
+      salvos = salvos.filter(m => m.id !== id);
+      salvarMovimentosSalvos(salvos);
+
+      if (idEmEdicao === id) {
+        sairModoEdicao();
+        limparFormulario();
+        document.getElementById("resultado").textContent = "O movimento que estava sendo editado foi removido.";
+      }
+
+      renderizarSalvos();
+    }
+
+    function limparTudo() {
+      const confirmar = confirm("Tem certeza que deseja apagar todos os movimentos salvos?");
+      if (!confirmar) return;
+
+      localStorage.removeItem("movimentosRPG");
+      sairModoEdicao();
+      limparFormulario();
+      renderizarSalvos();
+      document.getElementById("resultado").textContent = "Todos os movimentos salvos foram removidos.";
+      alert("Todos os movimentos salvos foram removidos.");
+    }
+
+    function exportarJSON() {
+      const salvos = obterMovimentosSalvos();
+
+      if (salvos.length === 0) {
+        alert("Não há movimentos salvos para exportar.");
+        return;
+      }
+
+      const json = JSON.stringify(salvos, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "movimentos_rpg.json";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+    }
+
+    function importarJSON() {
+      const input = document.getElementById("importarArquivo");
+      const arquivo = input.files[0];
+
+      if (!arquivo) {
+        alert("Selecione um arquivo JSON para importar.");
+        return;
+      }
+
+      const leitor = new FileReader();
+
+      leitor.onload = function(evento) {
+        try {
+          const dados = JSON.parse(evento.target.result);
+
+          if (!Array.isArray(dados)) {
+            alert("O arquivo JSON precisa conter uma lista de movimentos.");
+            return;
+          }
+
+          const salvosAtuais = obterMovimentosSalvos();
+          const novos = dados.map(item => ({
+            id: item.id || Date.now() + Math.floor(Math.random() * 100000),
+            nome: item.nome || "Sem nome",
+            tipo: item.tipo || "Normal",
+            classeOriginal: item.classeOriginal || "fisico",
+            categoria: item.categoria || "ofensivo",
+            poder: item.poder ?? 40,
+            contato: item.contato || "nao",
+            especialRaro: item.especialRaro || "nenhum",
+            movimento: item.movimento || "Ofensivo",
+            distancia: item.distancia || "Curta",
+            impacto: item.impacto || "Baixo",
+            nivelEspecial: item.nivelEspecial || null,
+            efeito: item.efeito || "",
+            alteracoesDeAtributo: Array.isArray(item.alteracoesDeAtributo) ? item.alteracoesDeAtributo : [],
+            efeitoCritico: item.efeitoCritico || null,
+            texto: item.texto || ""
+          }));
+
+          const combinados = [...salvosAtuais, ...novos];
+          salvarMovimentosSalvos(combinados);
+          renderizarSalvos();
+          alert("Movimentos importados com sucesso.");
+          input.value = "";
+        } catch (erro) {
+          alert("Não foi possível importar o arquivo. Verifique se ele é um JSON válido.");
+        }
+      };
+
+      leitor.readAsText(arquivo);
+    }
+
+    function renderizarSalvos() {
+      const lista = document.getElementById("listaSalvos");
+      const salvos = obterMovimentosSalvos();
+
+      if (salvos.length === 0) {
+        lista.innerHTML = '<p class="small">Nenhum movimento salvo ainda.</p>';
+        return;
+      }
+
+      lista.innerHTML = "";
+
+      salvos.forEach(mov => {
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+          <strong>${mov.nome}</strong><br>
+          <span class="small">Tipo: ${mov.tipo} | Distância: ${mov.distancia} | Impacto: ${mov.impacto}</span>
+          <div style="margin-top:10px; white-space: pre-wrap;">${mov.texto}</div>
+          <div class="card-actions">
+            <button class="edit-btn" onclick="editarMovimento(${mov.id})">Editar movimento</button>
+            <button class="danger" onclick="deletarMovimento(${mov.id})">Deletar movimento</button>
+          </div>
+        `;
+
+        lista.appendChild(div);
+      });
+    }
+
+    renderizarSalvos();
+  </script>
+</body>
+</html>

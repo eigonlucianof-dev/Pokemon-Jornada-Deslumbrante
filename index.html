@@ -2,10 +2,239 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Pokémon RPG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Jornada Deslumbrante</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #eaf6ff, #ffffff);
+      color: #1f2937;
+    }
+
+    header {
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+
+    nav {
+      background: white;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #dc2626;
+      font-weight: bold;
+      padding: 10px 16px;
+      border-radius: 999px;
+      transition: 0.2s;
+      background: #fff5f5;
+    }
+
+    nav a:hover {
+      background: #fecaca;
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: #111827;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      margin-bottom: 24px;
+      color: #4b5563;
+    }
+
+    .botoes {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .botao {
+      text-decoration: none;
+      background: #2563eb;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    .botao:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+    }
+
+    .secoes {
+      max-width: 1100px;
+      margin: 30px auto 50px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #dc2626;
+    }
+
+    .card p {
+      margin-bottom: 14px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: white;
+      background: #dc2626;
+      padding: 10px 14px;
+      display: inline-block;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .card a:hover {
+      background: #b91c1c;
+    }
+
+    footer {
+      background: #111827;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      .hero h2 {
+        font-size: 1.5rem;
+      }
+
+      nav {
+        padding: 12px;
+      }
+
+      nav a {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Pokémon Jornada Deslumbrante</h1>
-  <p>Meu site está funcionando!</p>
+
+  <header>
+    <h1>Pokémon Jornada Deslumbrante</h1>
+    <p>Site oficial do meu RPG de Pokémon</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="regras.html">Regras</a>
+    <a href="fichas.html">Fichas</a>
+    <a href="movimentos.html">Movimentos</a>
+    <a href="ferramentas.html">Ferramentas</a>
+  </nav>
+
+  <section class="hero">
+    <h2>Bem-vindo ao universo de Jornada Deslumbrante</h2>
+    <p>
+      Aqui você encontra regras, adaptações, fichas e ferramentas para jogar o RPG.
+    </p>
+
+    <div class="botoes">
+      <a class="botao" href="regras.html">Ver Regras</a>
+      <a class="botao" href="ferramentas.html">Abrir Ferramentas</a>
+    </div>
+  </section>
+
+  <section class="secoes">
+    <div class="card">
+      <h3>Regras</h3>
+      <p>Veja as regras principais do sistema, combate e funcionamento do RPG.</p>
+      <a href="regras.html">Acessar</a>
+    </div>
+
+    <div class="card">
+      <h3>Fichas</h3>
+      <p>Área para fichas de personagens, Pokémon e modelos prontos.</p>
+      <a href="fichas.html">Acessar</a>
+    </div>
+
+    <div class="card">
+      <h3>Movimentos</h3>
+      <p>Consulte adaptações de golpes e recursos ligados aos movimentos.</p>
+      <a href="movimentos.html">Acessar</a>
+    </div>
+
+    <div class="card">
+      <h3>Ferramentas</h3>
+      <p>Abra suas páginas em HTML, como adaptadores e recursos de treinador.</p>
+      <a href="ferramentas.html">Acessar</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>Pokémon Jornada Deslumbrante © 2026</p>
+  </footer>
+
 </body>
 </html>

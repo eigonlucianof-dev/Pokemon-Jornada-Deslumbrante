@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roteiro de Jornada</title>
+  <style>
+    :root {
+      --bg: #080808;
+      --panel: #101010;
+      --panel-2: #151515;
+      --text: #f2f2f2;
+      --muted: #a8a8a8;
+      --line: #2a2a2a;
+
+      --purple: #7d4db1;
+      --blue: #4f79b8;
+      --yellow: #b89a36;
+
+      --green: #4f9a68;
+      --red: #b85a5a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      padding: 18px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .topo {
+      text-align: center;
+      border: 1px solid var(--purple);
+      border-radius: 14px;
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      background: #0d0d0d;
+    }
+
+    .topo h1 {
+      margin: 0;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #ece4f8;
+    }
+
+    .topo p {
+      margin: 6px 0 0;
+      color: #c7bdd6;
+      font-size: 0.98rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background: #141414;
+      color: #d8d8d8;
+      border: 1px solid #2e2e2e;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: 0.15s;
+    }
+
+    button:hover {
+      background: #1a1a1a;
+      border-color: #444;
+    }
+
+    .toolbar .danger {
+      color: #c8aaaa;
+    }
+
+    .aviso {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      padding-left: 2px;
+    }
+
+    .section {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+    }
+
+    .section-purple {
+      border-left: 4px solid var(--purple);
+    }
+
+    .section-blue {
+      border-left: 4px solid var(--blue);
+    }
+
+    .section-yellow {
+      border-left: 4px solid var(--yellow);
+    }
+
+    .scene-success {
+      border-left-color: var(--green) !important;
+    }
+
+    .scene-failure {
+      border-left-color: var(--red) !important;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 1.18rem;
+      font-weight: 700;
+    }
+
+    .purple-text { color: #ded0f0; }
+    .blue-text { color: #cddcf1; }
+    .yellow-text { color: #e6ddb8; }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .small {
+      font-size: 0.87rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 0.93rem;
+      color: #e4e4e4;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--panel-2);
+      color: white;
+      border: 1px solid #2c2c2c;
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-size: 0.94rem;
+      resize: vertical;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #4a4a4a;
+    }
+
+    textarea {
+      min-height: 84px;
+      overflow: hidden;
+    }
+
+    select {
+      min-height: 42px;
+    }
+
+    .subcard {
+      background: #0c0c0c;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .character-card {
+      border-left: 3px solid var(--purple);
+    }
+
+    .secondary-card {
+      border-left: 3px solid var(--blue);
+    }
+
+    .tertiary-card {
+      border-left: 3px solid var(--yellow);
+    }
+
+    .inline-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .inline-actions button {
+      font-size: 0.9rem;
+    }
+
+    .divider {
+      height: 1px;
+      background: #232323;
+      margin: 14px 0;
+    }
+
+    .status-box {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #0d0d0d;
+      border: 1px dashed #2c2c2c;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #888;
+      font-size: 0.85rem;
+      padding: 6px 0 18px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 12px;
+      }
+
+      .topo h1 {
+        font-size: 1.6rem;
+      }
+
+      .section {
+        padding: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topo">
+      <h1>Roteiro de Jornada</h1>
+      <p>Pokémon Jornada Deslumbrante.</p>
+    </header>
+
+    <div class="toolbar">
+      <button onclick="exportarDados()">Exportar</button>
+      <button onclick="document.getElementById('importFile').click()">Importar</button>
+      <button class="danger" onclick="limparTudo()">Apagar</button>
+      <input type="file" id="importFile" accept=".json" style="display:none;">
+    </div>
+
+    <div class="aviso">
+      Lembrete: por segurança, exporte o roteiro de vez em quando.
+    </div>
+
+    <section class="section section-purple">
+      <h2 class="section-title purple-text">Informações da Aventura</h2>
+
+      <div class="grid grid-2">
+        <div class="field">
+          <label for="tituloAventura">Título da aventura</label>
+          <input type="text" id="tituloAventura" placeholder="Digite o título da aventura">
+        </div>
+
+        <div class="field">
+          <label for="incitaAventura">O que incita a aventura?</label>
+          <textarea id="incitaAventura" placeholder="Motivação, evento inicial, chamado, descoberta..."></textarea>
+        </div>
+      </div>
+
+      <div class="grid grid-3" style="margin-top: 12px;">
+        <div class="field">
+          <label for="conflitoAventura">Conflito</label>
+          <textarea id="conflitoAventura"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="climaxAventura">Clímax</label>
+          <textarea id="climaxAventura"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="desfechoAventura">Desfecho</label>
+          <textarea id="desfechoAventura"></textarea>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top: 12px;">
+        <label for="sinopseAventura">Sinopse / texto longo</label>
+        <textarea id="sinopseAventura" placeholder="Escreva aqui a visão geral da aventura."></textarea>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="purple-text">Personagens principais</h3>
+      <p class="muted">Começa com 4 espaços, mas você pode adicionar quantos quiser.</p>
+
+      <div id="personagensPrincipais"></div>
+
+      <div class="inline-actions">
+        <button onclick="adicionarPersonagemPrincipal()">Adicionar personagem principal</button>
+      </div>
+    </section>
+
+    <section class="section section-blue">
+      <h2 class="section-title blue-text">Sessões</h2>
+      <p class="muted">Organize a aventura em quantas sessões precisar.</p>
+
+      <div class="inline-actions">
+        <button onclick="adicionarSessao()">Criar sessão</button>
+      </div>
+
+      <div id="sessoesContainer"></div>
+    </section>
+
+    <div class="footer-note">
+      Salvamento automático ativo no navegador.
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "roteiroJornadaMinimal_v1";
+
+    function autoResize(el) {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    }
+
+    function bindAutoResize(root = document) {
+      root.querySelectorAll("textarea").forEach(textarea => {
+        autoResize(textarea);
+        textarea.addEventListener("input", () => autoResize(textarea));
+      });
+    }
+
+    function bindAutosave(root = document) {
+      root.querySelectorAll("input, textarea, select").forEach(el => {
+        el.addEventListener("input", salvarDados);
+        el.addEventListener("change", salvarDados);
+      });
+    }
+
+    function escapeHtml(texto) {
+      return String(texto || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function adicionarPersonagemPrincipal(dados = {}) {
+      const container = document.getElementById("personagensPrincipais");
+      const card = document.createElement("div");
+      card.className = "subcard character-card";
+
+      card.innerHTML = `
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Nome do personagem</label>
+            <input type="text" class="char-nome" value="${escapeHtml(dados.nome)}">
+          </div>
+          <div class="field">
+            <label>Tipo de personagem</label>
+            <input type="text" class="char-tipo" placeholder="Treinador, Pokémon, rival, mentor..." value="${escapeHtml(dados.tipo)}">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 12px;">
+          <label>Pequena sinopse / história</label>
+          <textarea class="char-sinopse">${escapeHtml(dados.sinopse)}</textarea>
+        </div>
+
+        <div class="inline-actions">
+          <button type="button" onclick="this.closest('.character-card').remove(); salvarDados();">Remover</button>
+        </div>
+      `;
+
+      container.appendChild(card);
+      bindAutoResize(card);
+      bindAutosave(card);
+      salvarDados();
+    }
+
+    function adicionarPersonagemSecundario(container, dados = {}) {
+      const card = document.createElement("div");
+      card.className = "subcard secondary-card";
+
+      card.innerHTML = `
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Nome</label>
+            <input type="text" class="sec-nome" value="${escapeHtml(dados.nome)}">
+          </div>
+          <div class="field">
+            <label>Personalidade</label>
+            <textarea class="sec-personalidade">${escapeHtml(dados.personalidade)}</textarea>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 12px;">
+          <label>Desenvolvimento leve</label>
+          <textarea class="sec-desenvolvimento">${escapeHtml(dados.desenvolvimento)}</textarea>
+        </div>
+
+        <div class="inline-actions">
+          <button type="button" onclick="this.closest('.secondary-card').remove(); salvarDados();">Remover</button>
+        </div>
+      `;
+
+      container.appendChild(card);
+      bindAutoResize(card);
+      bindAutosave(card);
+      salvarDados();
+    }
+
+    function adicionarPersonagemTerciario(container, dados = {}) {
+      const card = document.createElement("div");
+      card.className = "subcard tertiary-card";
+
+      card.innerHTML = `
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Nome</label>
+            <input type="text" class="ter-nome" value="${escapeHtml(dados.nome)}">
+          </div>
+          <div class="field">
+            <label>Influência na cena</label>
+            <textarea class="ter-influencia">${escapeHtml(dados.influencia)}</textarea>
+          </div>
+        </div>
+
+        <div class="inline-actions">
+          <button type="button" onclick="this.closest('.tertiary-card').remove(); salvarDados();">Remover</button>
+        </div>
+      `;
+
+      container.appendChild(card);
+      bindAutoResize(card);
+      bindAutosave(card);
+      salvarDados();
+    }
+
+    function adicionarCena(container, dados = {}) {
+      const card = document.createElement("div");
+      card.className = "section section-yellow";
+
+      card.innerHTML = `
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Título da cena</label>
+            <input type="text" class="cena-titulo" value="${escapeHtml(dados.titulo)}">
+          </div>
+          <div class="field">
+            <label>Personagens presentes</label>
+            <textarea class="cena-personagens">${escapeHtml(dados.personagens)}</textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-3" style="margin-top: 12px;">
+          <div class="field">
+            <label>Conflito / desafio</label>
+            <textarea class="cena-conflito">${escapeHtml(dados.conflito)}</textarea>
+          </div>
+          <div class="field">
+            <label>Objetivo</label>
+            <textarea class="cena-objetivo">${escapeHtml(dados.objetivo)}</textarea>
+          </div>
+          <div class="field">
+            <label>Recompensas da cena</label>
+            <textarea class="cena-recompensas">${escapeHtml(dados.recompensas)}</textarea>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 12px;">
+          <label>Enredo da cena</label>
+          <textarea class="cena-enredo">${escapeHtml(dados.enredo)}</textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <h4 class="yellow-text">Personagens terciários</h4>
+        <div class="terciarios-container"></div>
+        <div class="inline-actions">
+          <button type="button" class="btn-add-terciario">Adicionar personagem terciário</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Recursos extras</label>
+            <textarea class="cena-recursos">${escapeHtml(dados.recursos)}</textarea>
+          </div>
+
+          <div class="field">
+            <label>Status da cena</label>
+            <select class="cena-status">
+              <option value="" ${dados.status === "" ? "selected" : ""}>Não concluída / em aberto</option>
+              <option value="sucesso" ${dados.status === "sucesso" ? "selected" : ""}>Concluída com sucesso</option>
+              <option value="falha" ${dados.status === "falha" ? "selected" : ""}>Concluída com falha</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="status-box status-sucesso ${dados.status === "sucesso" ? "" : "hidden"}">
+          <div class="field">
+            <label>Consequências narrativas positivas</label>
+            <textarea class="cena-cons-sucesso">${escapeHtml(dados.consequenciaSucesso)}</textarea>
+          </div>
+        </div>
+
+        <div class="status-box status-falha ${dados.status === "falha" ? "" : "hidden"}">
+          <div class="field">
+            <label>Consequências da falha</label>
+            <textarea class="cena-cons-falha">${escapeHtml(dados.consequenciaFalha)}</textarea>
+          </div>
+        </div>
+
+        <div class="inline-actions">
+          <button type="button" class="btn-remove-cena">Remover cena</button>
+        </div>
+      `;
+
+      const statusSelect = card.querySelector(".cena-status");
+      const sucessoBox = card.querySelector(".status-sucesso");
+      const falhaBox = card.querySelector(".status-falha");
+
+      function atualizarStatusCena() {
+        const status = statusSelect.value;
+        card.classList.remove("scene-success", "scene-failure");
+        sucessoBox.classList.add("hidden");
+        falhaBox.classList.add("hidden");
+
+        if (status === "sucesso") {
+          card.classList.add("scene-success");
+          sucessoBox.classList.remove("hidden");
+        } else if (status === "falha") {
+          card.classList.add("scene-failure");
+          falhaBox.classList.remove("hidden");
+        }
+
+        bindAutoResize(card);
+        salvarDados();
+      }
+
+      card.querySelector(".btn-add-terciario").addEventListener("click", () => {
+        adicionarPersonagemTerciario(card.querySelector(".terciarios-container"));
+      });
+
+      card.querySelector(".btn-remove-cena").addEventListener("click", () => {
+        card.remove();
+        salvarDados();
+      });
+
+      statusSelect.addEventListener("change", atualizarStatusCena);
+
+      container.appendChild(card);
+
+      if (Array.isArray(dados.terciarios)) {
+        dados.terciarios.forEach(t => adicionarPersonagemTerciario(card.querySelector(".terciarios-container"), t));
+      }
+
+      bindAutoResize(card);
+      bindAutosave(card);
+      atualizarStatusCena();
+      salvarDados();
+    }
+
+    function adicionarSessao(dados = {}) {
+      const container = document.getElementById("sessoesContainer");
+      const sessao = document.createElement("div");
+      sessao.className = "section section-blue";
+
+      sessao.innerHTML = `
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Título da sessão</label>
+            <input type="text" class="sessao-titulo" value="${escapeHtml(dados.titulo)}">
+          </div>
+          <div class="field">
+            <label>Recompensas da sessão</label>
+            <textarea class="sessao-recompensas">${escapeHtml(dados.recompensas)}</textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="margin-top: 12px;">
+          <div class="field">
+            <label>Conflito da sessão</label>
+            <textarea class="sessao-conflito">${escapeHtml(dados.conflito)}</textarea>
+          </div>
+          <div class="field">
+            <label>Clímax da sessão</label>
+            <textarea class="sessao-climax">${escapeHtml(dados.climax)}</textarea>
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="margin-top: 12px;">
+          <div class="field">
+            <label>Desfecho da sessão</label>
+            <textarea class="sessao-desfecho">${escapeHtml(dados.desfecho)}</textarea>
+          </div>
+          <div class="field">
+            <label>Gancho para a próxima sessão</label>
+            <textarea class="sessao-gancho">${escapeHtml(dados.gancho)}</textarea>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 12px;">
+          <label>Enredo da sessão</label>
+          <textarea class="sessao-enredo">${escapeHtml(dados.enredo)}</textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="blue-text">Personagens da sessão</h3>
+        <div class="personagens-secundarios"></div>
+        <div class="inline-actions">
+          <button type="button" class="btn-add-secundario">Adicionar personagem da sessão</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="yellow-text">Cenas</h3>
+        <div class="cenas-container"></div>
+
+        <div class="inline-actions">
+          <button type="button" class="btn-add-cena">Criar cena</button>
+          <button type="button" class="btn-remove-sessao">Remover sessão</button>
+        </div>
+      `;
+
+      sessao.querySelector(".btn-add-secundario").addEventListener("click", () => {
+        adicionarPersonagemSecundario(sessao.querySelector(".personagens-secundarios"));
+      });
+
+      sessao.querySelector(".btn-add-cena").addEventListener("click", () => {
+        adicionarCena(sessao.querySelector(".cenas-container"));
+      });
+
+      sessao.querySelector(".btn-remove-sessao").addEventListener("click", () => {
+        sessao.remove();
+        salvarDados();
+      });
+
+      container.appendChild(sessao);
+
+      if (Array.isArray(dados.personagensSecundarios)) {
+        dados.personagensSecundarios.forEach(p => {
+          adicionarPersonagemSecundario(sessao.querySelector(".personagens-secundarios"), p);
+        });
+      }
+
+      if (Array.isArray(dados.cenas)) {
+        dados.cenas.forEach(c => {
+          adicionarCena(sessao.querySelector(".cenas-container"), c);
+        });
+      }
+
+      bindAutoResize(sessao);
+      bindAutosave(sessao);
+      salvarDados();
+    }
+
+    function coletarDados() {
+      return {
+        tituloAventura: document.getElementById("tituloAventura").value,
+        incitaAventura: document.getElementById("incitaAventura").value,
+        conflitoAventura: document.getElementById("conflitoAventura").value,
+        climaxAventura: document.getElementById("climaxAventura").value,
+        desfechoAventura: document.getElementById("desfechoAventura").value,
+        sinopseAventura: document.getElementById("sinopseAventura").value,
+
+        personagensPrincipais: [...document.querySelectorAll("#personagensPrincipais .character-card")].map(card => ({
+          nome: card.querySelector(".char-nome")?.value || "",
+          tipo: card.querySelector(".char-tipo")?.value || "",
+          sinopse: card.querySelector(".char-sinopse")?.value || ""
+        })),
+
+        sessoes: [...document.querySelectorAll("#sessoesContainer > .section-blue")].map(sessao => ({
+          titulo: sessao.querySelector(".sessao-titulo")?.value || "",
+          recompensas: sessao.querySelector(".sessao-recompensas")?.value || "",
+          conflito: sessao.querySelector(".sessao-conflito")?.value || "",
+          climax: sessao.querySelector(".sessao-climax")?.value || "",
+          desfecho: sessao.querySelector(".sessao-desfecho")?.value || "",
+          gancho: sessao.querySelector(".sessao-gancho")?.value || "",
+          enredo: sessao.querySelector(".sessao-enredo")?.value || "",
+
+          personagensSecundarios: [...sessao.querySelectorAll(".personagens-secundarios .secondary-card")].map(p => ({
+            nome: p.querySelector(".sec-nome")?.value || "",
+            personalidade: p.querySelector(".sec-personalidade")?.value || "",
+            desenvolvimento: p.querySelector(".sec-desenvolvimento")?.value || ""
+          })),
+
+          cenas: [...sessao.querySelectorAll(".cenas-container > .section-yellow")].map(cena => ({
+            titulo: cena.querySelector(".cena-titulo")?.value || "",
+            personagens: cena.querySelector(".cena-personagens")?.value || "",
+            conflito: cena.querySelector(".cena-conflito")?.value || "",
+            objetivo: cena.querySelector(".cena-objetivo")?.value || "",
+            recompensas: cena.querySelector(".cena-recompensas")?.value || "",
+            enredo: cena.querySelector(".cena-enredo")?.value || "",
+            recursos: cena.querySelector(".cena-recursos")?.value || "",
+            status: cena.querySelector(".cena-status")?.value || "",
+            consequenciaSucesso: cena.querySelector(".cena-cons-sucesso")?.value || "",
+            consequenciaFalha: cena.querySelector(".cena-cons-falha")?.value || "",
+            terciarios: [...cena.querySelectorAll(".terciarios-container .tertiary-card")].map(t => ({
+              nome: t.querySelector(".ter-nome")?.value || "",
+              influencia: t.querySelector(".ter-influencia")?.value || ""
+            }))
+          }))
+        }))
+      };
+    }
+
+    function salvarDados() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(coletarDados()));
+    }
+
+    function carregarDados() {
+      const salvo = localStorage.getItem(STORAGE_KEY);
+
+      if (!salvo) {
+        for (let i = 0; i < 4; i++) adicionarPersonagemPrincipal();
+        return;
+      }
+
+      try {
+        const dados = JSON.parse(salvo);
+
+        document.getElementById("tituloAventura").value = dados.tituloAventura || "";
+        document.getElementById("incitaAventura").value = dados.incitaAventura || "";
+        document.getElementById("conflitoAventura").value = dados.conflitoAventura || "";
+        document.getElementById("climaxAventura").value = dados.climaxAventura || "";
+        document.getElementById("desfechoAventura").value = dados.desfechoAventura || "";
+        document.getElementById("sinopseAventura").value = dados.sinopseAventura || "";
+
+        document.getElementById("personagensPrincipais").innerHTML = "";
+        document.getElementById("sessoesContainer").innerHTML = "";
+
+        if (Array.isArray(dados.personagensPrincipais) && dados.personagensPrincipais.length) {
+          dados.personagensPrincipais.forEach(p => adicionarPersonagemPrincipal(p));
+        } else {
+          for (let i = 0; i < 4; i++) adicionarPersonagemPrincipal();
+        }
+
+        if (Array.isArray(dados.sessoes)) {
+          dados.sessoes.forEach(s => adicionarSessao(s));
+        }
+
+        bindAutoResize(document);
+        bindAutosave(document);
+        salvarDados();
+      } catch (erro) {
+        console.error(erro);
+        for (let i = 0; i < 4; i++) adicionarPersonagemPrincipal();
+      }
+    }
+
+    function exportarDados() {
+      const dados = coletarDados();
+      const blob = new Blob([JSON.stringify(dados, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const titulo = (dados.tituloAventura || "roteiro_de_jornada").replace(/[^\w\-]+/g, "_");
+      a.href = url;
+      a.download = `${titulo}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importarDados(event) {
+      const arquivo = event.target.files[0];
+      if (!arquivo) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const dados = JSON.parse(e.target.result);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+          location.reload();
+        } catch {
+          alert("Arquivo inválido.");
+        }
+      };
+      reader.readAsText(arquivo);
+    }
+
+    function limparTudo() {
+      if (!confirm("Apagar todo o roteiro salvo neste navegador?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+
+    document.getElementById("importFile").addEventListener("change", importarDados);
+
+    bindAutoResize(document);
+    bindAutosave(document);
+    carregarDados();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Mestre - Jornada Deslumbrante v3</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #101010;
+      --panel-2: #171717;
+      --panel-3: #1c0d0d;
+      --text: #f3f3f3;
+      --muted: #b7b7b7;
+      --border: #2f2f2f;
+      --red: #c92b2b;
+      --red-2: #8b1919;
+      --red-soft: rgba(201, 43, 43, 0.14);
+      --green-turn: #00c853;
+      --yellow: #ffd54f;
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #050505 0%, #0b0b0b 100%);
+      color: var(--text);
+    }
+
+    .container {
+      width: min(1360px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 42px;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, #131313 0%, #0e0e0e 100%);
+      border: 2px solid var(--red);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 14px 30px var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    h1, h2, h3, h4 { margin: 0; }
+
+    h1 {
+      font-size: clamp(1.55rem, 2vw, 2.3rem);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #0b0b0b;
+      border: 1px solid #242424;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .grid { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: 1.1fr 1.1fr 0.9fr; }
+
+    .panel {
+      background: linear-gradient(180deg, #111111 0%, #0d0d0d 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 22px var(--shadow);
+      min-width: 0;
+    }
+
+    .panel h2 {
+      color: #ffb1b1;
+      font-size: 1.08rem;
+      margin-bottom: 14px;
+    }
+
+    .subpanel {
+      background: #0a0a0a;
+      border: 1px solid #252525;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    input, select, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #313131;
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 11px 13px;
+      font-size: 0.96rem;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid rgba(201, 43, 43, 0.28);
+      border-color: var(--red);
+    }
+
+    input[readonly] {
+      background: #111111;
+      color: #d7d7d7;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    button:hover { filter: brightness(1.08); }
+    button:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #b32626 0%, #8d1c1c 100%);
+      border-color: #c73d3d;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1c1c1c 100%);
+      border-color: #404040;
+    }
+
+    .btn-ghost {
+      background: #141414;
+      border-color: #2b2b2b;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .actions > * { flex: 1 1 180px; }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+      max-height: 520px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .fighter-card {
+      background: linear-gradient(180deg, #140d0d 0%, #0d0d0d 100%);
+      border: 1px solid #492121;
+      border-left: 5px solid var(--red);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .fighter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .fighter-tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: var(--red-soft);
+      border: 1px solid #5b2020;
+      color: #ffb8b8;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .checkbox-row input {
+      width: auto;
+      transform: scale(1.15);
+      accent-color: var(--red);
+    }
+
+    .initiative-box {
+      background: linear-gradient(180deg, #081108 0%, #0a0f0a 100%);
+      border: 1px solid #1f3d1f;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .turn-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .status-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .status-label {
+      font-size: 0.82rem;
+      color: #b7ddb7;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-value {
+      font-size: 1.04rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      max-height: 480px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 98px 1fr;
+      gap: 10px;
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .timeline-item.current {
+      border-color: var(--green-turn);
+      box-shadow: 0 0 0 1px rgba(0,200,83,0.18);
+      background: rgba(0, 200, 83, 0.1);
+    }
+
+    .timeline-item.past { opacity: 0.62; }
+    .timeline-position { font-weight: 700; color: #d2f0d2; }
+
+    .timeline-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .timeline-name { font-weight: 700; }
+    .timeline-meta { color: #cbd8cb; font-size: 0.9rem; }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid #395039;
+      background: rgba(255,255,255,0.04);
+      font-size: 0.84rem;
+    }
+
+    .resolver-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 1.05fr 0.9fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .roll-side {
+      background: linear-gradient(180deg, #120c0c 0%, #0c0c0c 100%);
+      border: 1px solid #3c2020;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .roll-side h3 {
+      margin-bottom: 12px;
+      color: #ffb1b1;
+      font-size: 1rem;
+    }
+
+    .side-preview {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #111111;
+      border: 1px solid #2b2b2b;
+      color: #d0d0d0;
+      font-size: 0.9rem;
+    }
+
+    .result-card {
+      min-height: 220px;
+      background: #0a0a0a;
+      border: 2px solid #363636;
+      border-radius: 16px;
+      padding: 16px;
+      line-height: 1.55;
+      position: sticky;
+      top: 18px;
+    }
+
+    .result-card.success { border-color: #46b946; }
+    .result-card.fail { border-color: #cf2d2d; }
+    .result-card.double { border-color: var(--yellow); }
+    .result-card.critical-fail { border-color: #ff9696; background: linear-gradient(180deg, #521010 0%, #2c0909 100%); }
+
+    .history-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .history-item {
+      background: #0a0a0a;
+      border: 1px solid #252525;
+      border-left: 5px solid #404040;
+      border-radius: 14px;
+      padding: 12px 14px;
+      line-height: 1.5;
+    }
+
+    .history-item.success { border-left-color: #46b946; }
+    .history-item.fail { border-left-color: #cf2d2d; }
+    .history-item.double { border-left-color: var(--yellow); }
+    .history-item.critical-fail { border-left-color: #ffb3b3; background: #2a0c0c; }
+    .history-item.duel { border-left-color: #7b4cff; }
+
+    .history-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .muted { color: var(--muted); }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 16px;
+      border: 1px dashed #353535;
+      border-radius: 14px;
+      background: #0a0a0a;
+    }
+
+    @media (max-width: 1200px) {
+      .grid-3, .resolver-layout { grid-template-columns: 1fr; }
+      .result-card { position: static; }
+    }
+
+    @media (max-width: 940px) {
+      .grid-2, .form-grid, .form-grid-3, .mini-grid, .turn-status { grid-template-columns: 1fr; }
+      .timeline-item { grid-template-columns: 1fr; }
+      .cards, .timeline { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Painel do Mestre - Combate</h1>
+      <div class="subtitle">Controle jogadores, rivais, iniciativa, rounds, técnicas e rolagens no mesmo lugar, com visual mais limpo para usar no PC.</div>
+      <div class="note"><strong>Observação:</strong> em combate contra <strong>Pokémon selvagem</strong>, use a <strong>Habilidade do Pokémon</strong> para a iniciativa. Em combate contra <strong>treinador</strong>, use a <strong>Habilidade do treinador</strong>.</div>
+    </section>
+
+    <div class="grid grid-2">
+      <section class="panel">
+        <h2>1. Jogadores</h2>
+        <div class="form-grid">
+          <div>
+            <label for="playerCount">Quantidade de jogadores</label>
+            <input id="playerCount" type="number" min="1" value="1" />
+          </div>
+          <div style="display:flex;align-items:end;">
+            <button class="btn-primary" id="buildPlayersBtn" type="button">Criar cards dos jogadores</button>
+          </div>
+        </div>
+        <div class="cards" id="playersContainer"></div>
+      </section>
+
+      <section class="panel">
+        <h2>2. Rivais e iniciativa</h2>
+        <div class="form-grid">
+          <div>
+            <label for="rivalCount">Quantidade de rivais</label>
+            <input id="rivalCount" type="number" min="1" value="1" />
+          </div>
+          <div>
+            <label for="difficulty">Dificuldade da iniciativa</label>
+            <select id="difficulty">
+              <option value="facil">Fácil</option>
+              <option value="medio">Médio</option>
+              <option value="dificil">Difícil</option>
+              <option value="muito_dificil">Muito Difícil</option>
+            </select>
+          </div>
+          <div class="full">
+            <button class="btn-primary" id="buildRivalsBtn" type="button">Criar cards dos rivais</button>
+          </div>
+        </div>
+        <div class="cards" id="rivalsContainer"></div>
+        <div class="actions">
+          <button class="btn-primary" id="generateInitiativeBtn" type="button">Gerar iniciativa</button>
+          <button class="btn-secondary" id="advanceTurnBtn" type="button">Avançar turno</button>
+          <button class="btn-ghost" id="resetCombatBtn" type="button">Reiniciar combate</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top:18px;">
+      <h2>3. Ordem de turno</h2>
+      <div class="initiative-box">
+        <div class="turn-status">
+          <div class="status-card">
+            <div class="status-label">Round atual</div>
+            <div class="status-value" id="roundValue">1</div>
+          </div>
+          <div class="status-card">
+            <div class="status-label">Turno atual</div>
+            <div class="status-value" id="turnValue">Nenhum</div>
+          </div>
+          <div class="status-card">
+            <div class="status-label">Próximo marco</div>
+            <div class="status-value" id="cycleValue">Aguardando iniciativa</div>
+          </div>
+        </div>
+        <div class="timeline" id="initiativeTimeline">
+          <div class="empty">Gere a iniciativa para exibir a ordem dos combatentes.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:18px;">
+      <h2>4. Resolver ação</h2>
+      <div class="resolver-layout">
+        <div class="roll-side">
+          <h3>Lado ofensivo</h3>
+          <div class="form-grid">
+            <div>
+              <label for="modeAction">Modo</label>
+              <select id="modeAction">
+                <option value="duelo">Teste oposto</option>
+                <option value="meta">Teste com meta personalizada</option>
+              </select>
+            </div>
+            <div>
+              <label for="actorSelect">Quem está agindo</label>
+              <select id="actorSelect"></select>
+            </div>
+            <div>
+              <label for="actorAttr">Atributo ofensivo</label>
+              <select id="actorAttr">
+                <option value="poder">Poder</option>
+                <option value="habilidade">Habilidade</option>
+                <option value="resistencia">Resistência</option>
+              </select>
+            </div>
+            <div id="customMetaWrap">
+              <label for="customMeta">Meta personalizada</label>
+              <input id="customMeta" type="number" min="1" max="999" value="12" />
+            </div>
+          </div>
+
+          <div class="subpanel" style="margin-top:12px;">
+            <h4 style="margin-bottom:10px; color:#ffd2d2;">Modificadores do ataque</h4>
+            <div class="form-grid-3">
+              <div>
+                <label for="atkDadosBase">Dados base</label>
+                <select id="atkDadosBase"><option value="1">1d6</option><option value="2">2d6</option><option value="3">3d6</option></select>
+              </div>
+              <div>
+                <label for="atkPericia">Possui perícia?</label>
+                <select id="atkPericia"><option value="nao">Não</option><option value="sim">Sim</option></select>
+              </div>
+              <div>
+                <label for="atkVantagem">Possui vantagem?</label>
+                <select id="atkVantagem"><option value="nao">Não</option><option value="sim">Sim</option></select>
+              </div>
+              <div>
+                <label for="atkPerdas">Perdas</label>
+                <select id="atkPerdas"><option value="0">Não</option><option value="1">1 perda</option><option value="2">2 perdas</option><option value="3">3 perdas</option></select>
+              </div>
+              <div>
+                <label for="atkCritica">Chance crítica ampliada?</label>
+                <select id="atkCritica"><option value="nao">Não</option><option value="sim">Sim</option></select>
+              </div>
+              <div>
+                <label for="atkPreview">Dados finais</label>
+                <input id="atkPreview" type="text" value="1d6" readonly />
+              </div>
+            </div>
+          </div>
+          <div class="side-preview" id="attackHint">No teste com meta, apenas o lado ofensivo rola.</div>
+        </div>
+
+        <div class="roll-side">
+          <h3>Lado defensivo</h3>
+          <div class="form-grid">
+            <div id="targetWrap">
+              <label for="targetSelect">Alvo / oponente</label>
+              <select id="targetSelect"></select>
+            </div>
+            <div id="defenseWrap">
+              <label for="defenseType">Resposta defensiva</label>
+              <select id="defenseType">
+                <option value="resistencia">Resistência</option>
+                <option value="habilidade">Esquiva (Habilidade)</option>
+                <option value="poder">Contra-ataque (Poder)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="subpanel" style="margin-top:12px;">
+            <h4 style="margin-bottom:10px; color:#ffd2d2;">Modificadores da defesa</h4>
+            <div class="form-grid-3">
+              <div>
+                <label for="defDadosBase">Dados base</label>
+                <select id="defDadosBase"><option value="1">1d6</option><option value="2">2d6</option><option value="3">3d6</option></select>
+              </div>
+              <div>
+                <label for="defPericia">Possui perícia?</label>
+                <select id="defPericia"><option value="nao">Não</option><option value="sim">Sim</option></select>
+              </div>
+              <div>
+                <label for="defVantagem">Possui vantagem?</label>
+                <select id="defVantagem"><option value="nao">Não</option><option value="sim">Sim</option></select>
+              </div>
+              <div>
+                <label for="defPerdas">Perdas</label>
+                <select id="defPerdas"><option value="0">Não</option><option value="1">1 perda</option><option value="2">2 perdas</option><option value="3">3 perdas</option></select>
+              </div>
+              <div>
+                <label for="defCritica">Chance crítica ampliada?</label>
+                <select id="defCritica"><option value="nao">Não</option><option value="sim">Sim</option></select>
+              </div>
+              <div>
+                <label for="defPreview">Dados finais</label>
+                <input id="defPreview" type="text" value="1d6" readonly />
+              </div>
+            </div>
+          </div>
+          <div class="side-preview" id="defenseHint">No teste oposto, defesa e ataque usam seus próprios modificadores.</div>
+        </div>
+
+        <div class="result-card" id="resultCard">
+          <h3 style="margin-bottom:10px;">Nenhuma ação resolvida</h3>
+          <div class="muted">Selecione os combatentes e clique em <strong>Resolver ação</strong>.</div>
+          <div class="actions" style="margin-top:16px;">
+            <button class="btn-primary" id="rollActionBtn" type="button">Resolver ação</button>
+            <button class="btn-secondary" id="clearHistoryBtn" type="button">Limpar histórico</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:18px;">
+      <h2>Histórico do combate</h2>
+      <div class="history-list" id="historyList">
+        <div class="empty">Ainda não há ações registradas.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const elements = {
+      playerCount: $('playerCount'),
+      rivalCount: $('rivalCount'),
+      difficulty: $('difficulty'),
+      buildPlayersBtn: $('buildPlayersBtn'),
+      buildRivalsBtn: $('buildRivalsBtn'),
+      playersContainer: $('playersContainer'),
+      rivalsContainer: $('rivalsContainer'),
+      generateInitiativeBtn: $('generateInitiativeBtn'),
+      advanceTurnBtn: $('advanceTurnBtn'),
+      resetCombatBtn: $('resetCombatBtn'),
+      roundValue: $('roundValue'),
+      turnValue: $('turnValue'),
+      cycleValue: $('cycleValue'),
+      initiativeTimeline: $('initiativeTimeline'),
+      modeAction: $('modeAction'),
+      actorSelect: $('actorSelect'),
+      actorAttr: $('actorAttr'),
+      customMeta: $('customMeta'),
+      customMetaWrap: $('customMetaWrap'),
+      targetSelect: $('targetSelect'),
+      defenseType: $('defenseType'),
+      targetWrap: $('targetWrap'),
+      defenseWrap: $('defenseWrap'),
+      atkDadosBase: $('atkDadosBase'),
+      atkPericia: $('atkPericia'),
+      atkVantagem: $('atkVantagem'),
+      atkPerdas: $('atkPerdas'),
+      atkCritica: $('atkCritica'),
+      atkPreview: $('atkPreview'),
+      defDadosBase: $('defDadosBase'),
+      defPericia: $('defPericia'),
+      defVantagem: $('defVantagem'),
+      defPerdas: $('defPerdas'),
+      defCritica: $('defCritica'),
+      defPreview: $('defPreview'),
+      attackHint: $('attackHint'),
+      defenseHint: $('defenseHint'),
+      rollActionBtn: $('rollActionBtn'),
+      resultCard: $('resultCard'),
+      historyList: $('historyList'),
+      clearHistoryBtn: $('clearHistoryBtn')
+    };
+
+    const STORAGE_KEY = 'jd_master_combat_v3_history';
+    const state = { initiative: [], currentIndex: 0, round: 1 };
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function createFighterCard(type, index) {
+      const label = type === 'player' ? `Jogador ${index + 1}` : `Rival ${index + 1}`;
+      const prefix = `${type}-${index}`;
+      return `
+        <div class="fighter-card" data-type="${type}" data-index="${index}">
+          <div class="fighter-header">
+            <h3>${label}</h3>
+            <span class="fighter-tag">${type === 'player' ? 'Jogador' : 'Rival'}</span>
+          </div>
+          <div class="mini-grid">
+            <div>
+              <label for="${prefix}-name">Nome</label>
+              <input id="${prefix}-name" type="text" maxlength="60" placeholder="Nome do combatente" />
+            </div>
+            <div>
+              <label for="${prefix}-habilidade">Habilidade</label>
+              <input id="${prefix}-habilidade" type="number" min="0" max="50" value="0" />
+            </div>
+            <div>
+              <label for="${prefix}-poder">Poder</label>
+              <input id="${prefix}-poder" type="number" min="0" max="50" value="0" />
+            </div>
+          </div>
+          <div class="mini-grid" style="margin-top:10px;">
+            <div>
+              <label for="${prefix}-resistencia">Resistência</label>
+              <input id="${prefix}-resistencia" type="number" min="0" max="50" value="0" />
+            </div>
+            <div>
+              <label for="${prefix}-role">Referência</label>
+              <input id="${prefix}-role" type="text" maxlength="60" placeholder="Treinador, Pokémon, chefe..." />
+            </div>
+            <div>
+              <label for="${prefix}-obs">Observação</label>
+              <input id="${prefix}-obs" type="text" maxlength="80" placeholder="Opcional" />
+            </div>
+          </div>
+          ${type === 'player' ? `<label class="checkbox-row"><input id="${prefix}-technique" type="checkbox" />Técnica já foi usada</label>` : ''}
+        </div>
+      `;
+    }
+
+    function buildCards(container, type, count) {
+      container.innerHTML = Array.from({ length: count }, (_, index) => createFighterCard(type, index)).join('');
+      refreshCombatantSelects();
+    }
+
+    function getFighters(type) {
+      const container = type === 'player' ? elements.playersContainer : elements.rivalsContainer;
+      const cards = [...container.querySelectorAll('.fighter-card')];
+      return cards.map((card, index) => {
+        const prefix = `${type}-${index}`;
+        const name = ($(prefix + '-name').value || `${type === 'player' ? 'Jogador' : 'Rival'} ${index + 1}`).trim();
+        return {
+          id: prefix,
+          side: type,
+          name,
+          habilidade: clamp(parseInt($(prefix + '-habilidade').value || '0', 10), 0, 50),
+          poder: clamp(parseInt($(prefix + '-poder').value || '0', 10), 0, 50),
+          resistencia: clamp(parseInt($(prefix + '-resistencia').value || '0', 10), 0, 50),
+          role: ($(prefix + '-role').value || '').trim(),
+          obs: ($(prefix + '-obs').value || '').trim(),
+          techniqueUsed: type === 'player' ? $(prefix + '-technique').checked : false
+        };
+      });
+    }
+
+    function getAllFighters() {
+      return [...getFighters('player'), ...getFighters('rival')];
+    }
+
+    function refreshCombatantSelects() {
+      const fighters = getAllFighters();
+      const options = fighters.map(f => `<option value="${f.id}">${f.name} (${f.side === 'player' ? 'Jogador' : 'Rival'})</option>`).join('');
+      elements.actorSelect.innerHTML = options || '<option value="">Nenhum combatente</option>';
+      elements.targetSelect.innerHTML = options || '<option value="">Nenhum combatente</option>';
+      if (fighters.length > 1 && elements.targetSelect.selectedIndex === 0) {
+        elements.targetSelect.selectedIndex = 1;
+      }
+    }
+
+    function getFighterById(id) {
+      return getAllFighters().find(f => f.id === id) || null;
+    }
+
+    function calculateFinalDice(prefix) {
+      const base = parseInt(elements[prefix + 'DadosBase'].value, 10);
+      const pericia = elements[prefix + 'Pericia'].value === 'sim' ? 1 : 0;
+      const vantagem = elements[prefix + 'Vantagem'].value === 'sim' ? 1 : 0;
+      const perdas = parseInt(elements[prefix + 'Perdas'].value, 10);
+      return clamp(base + pericia + vantagem - perdas, 1, 3);
+    }
+
+    function updatePreview(prefix) {
+      elements[prefix + 'Preview'].value = `${calculateFinalDice(prefix)}d6`;
+    }
+
+    function d6() {
+      return Math.floor(Math.random() * 6) + 1;
+    }
+
+    function rollCheck(attributeValue, prefix) {
+      const dadosFinais = calculateFinalDice(prefix);
+      const critExpanded = elements[prefix + 'Critica'].value === 'sim';
+      const rolls = Array.from({ length: dadosFinais }, d6);
+      const sum = rolls.reduce((acc, n) => acc + n, 0);
+      const critThreshold = critExpanded ? 5 : 6;
+      const crits = rolls.filter(n => n >= critThreshold).length;
+      const critBonus = crits * attributeValue;
+      const criticalFail = rolls.every(n => n === 1);
+      const total = sum + attributeValue + critBonus;
+      return { dadosFinais, rolls, sum, crits, critBonus, total, criticalFail, attributeValue };
+    }
+
+    function sortBySkillDesc(list) {
+      return [...list].sort((a, b) => b.habilidade - a.habilidade || a.name.localeCompare(b.name, 'pt-BR'));
+    }
+
+    function buildEasyOrder(players, rivals) {
+      return sortBySkillDesc([...players, ...rivals]).map(f => ({ ...f, slotType: 'normal' }));
+    }
+
+    function buildMediumOrder(players, rivals) {
+      const normal = buildEasyOrder(players, rivals);
+      const extras = rivals.map(r => ({ ...r, slotType: 'extra', displayName: `${r.name} (ação extra)` }));
+      return [...normal, ...extras]
+        .map(item => ({ ...item, virtualSkill: item.slotType === 'extra' ? item.habilidade - 3 : item.habilidade }))
+        .sort((a, b) => (b.virtualSkill ?? b.habilidade) - (a.virtualSkill ?? a.habilidade) || a.name.localeCompare(b.name, 'pt-BR'));
+    }
+
+    function buildInterleavedOrder(players, rivals, consecutiveExtra = false) {
+      const ps = sortBySkillDesc(players);
+      const rs = sortBySkillDesc(rivals);
+      if (!ps.length && !rs.length) return [];
+      if (!ps.length) return rs.map(r => ({ ...r, slotType: 'normal' }));
+      if (!rs.length) return ps.map(p => ({ ...p, slotType: 'normal' }));
+
+      const totalLength = ps.length + rs.length;
+      const order = [];
+      let pIndex = 0;
+      let rIndex = 0;
+
+      if (ps[0].habilidade >= rs[0].habilidade) order.push({ ...ps[pIndex++], slotType: 'normal' });
+      else order.push({ ...rs[rIndex++], slotType: 'normal' });
+
+      while (order.length < totalLength) {
+        const lastSide = order[order.length - 1]?.side;
+        if (lastSide === 'player') {
+          if (rIndex < rs.length) order.push({ ...rs[rIndex++], slotType: 'normal' });
+          else if (pIndex < ps.length) order.push({ ...ps[pIndex++], slotType: 'normal' });
+        } else {
+          if (pIndex < ps.length) order.push({ ...ps[pIndex++], slotType: 'normal' });
+          else if (rIndex < rs.length) order.push({ ...rs[rIndex++], slotType: 'normal' });
+        }
+      }
+
+      if (consecutiveExtra && rs.length) {
+        const bestRival = rs[0];
+        let insertIndex = Math.max(1, order.findIndex(f => f.id === bestRival.id) + 1);
+        if (insertIndex <= 0) insertIndex = 1;
+        order.splice(insertIndex, 0, { ...bestRival, slotType: 'extra', displayName: `${bestRival.name} (ação extra)` });
+      }
+
+      return order;
+    }
+
+    function generateInitiative() {
+      const players = getFighters('player');
+      const rivals = getFighters('rival');
+      const difficulty = elements.difficulty.value;
+      let order = [];
+      if (difficulty === 'facil') order = buildEasyOrder(players, rivals);
+      if (difficulty === 'medio') order = buildMediumOrder(players, rivals);
+      if (difficulty === 'dificil') order = buildInterleavedOrder(players, rivals, false);
+      if (difficulty === 'muito_dificil') order = buildInterleavedOrder(players, rivals, true);
+      state.initiative = order;
+      state.currentIndex = 0;
+      state.round = 1;
+      renderInitiative();
+    }
+
+    function renderInitiative() {
+      const order = state.initiative;
+      if (!order.length) {
+        elements.initiativeTimeline.innerHTML = '<div class="empty">Gere a iniciativa para exibir a ordem dos combatentes.</div>';
+        elements.turnValue.textContent = 'Nenhum';
+        elements.cycleValue.textContent = 'Aguardando iniciativa';
+        elements.roundValue.textContent = state.round;
+        return;
+      }
+
+      elements.roundValue.textContent = state.round;
+      const current = order[state.currentIndex];
+      elements.turnValue.textContent = current.displayName || current.name;
+      elements.cycleValue.textContent = state.currentIndex === order.length - 1 ? `Ao avançar, começa o round ${state.round + 1}` : 'Ainda neste round';
+
+      elements.initiativeTimeline.innerHTML = order.map((fighter, index) => {
+        const className = index < state.currentIndex ? 'timeline-item past' : index === state.currentIndex ? 'timeline-item current' : 'timeline-item';
+        const label = index < state.currentIndex ? 'Já agiu' : index === state.currentIndex ? 'Agindo agora' : 'Vem depois';
+        return `
+          <div class="${className}">
+            <div class="timeline-position">${index + 1}º ${label}</div>
+            <div class="timeline-main">
+              <div>
+                <div class="timeline-name">${fighter.displayName || fighter.name}</div>
+                <div class="timeline-meta">${fighter.side === 'player' ? 'Jogador' : 'Rival'} | Habilidade ${fighter.habilidade}${fighter.slotType === 'extra' ? ' | ação extra' : ''}</div>
+              </div>
+              <span class="pill">${fighter.side === 'player' ? 'Aliado' : 'Adversário'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function advanceTurn() {
+      if (!state.initiative.length) return;
+      state.currentIndex += 1;
+      if (state.currentIndex >= state.initiative.length) {
+        state.currentIndex = 0;
+        state.round += 1;
+      }
+      renderInitiative();
+    }
+
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+    }
+
+    function saveHistory(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function addHistory(entry) {
+      const history = getHistory();
+      history.unshift(entry);
+      saveHistory(history.slice(0, 30));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const history = getHistory();
+      if (!history.length) {
+        elements.historyList.innerHTML = '<div class="empty">Ainda não há ações registradas.</div>';
+        return;
+      }
+      elements.historyList.innerHTML = history.map(item => `
+        <div class="history-item ${item.className}">
+          <div class="history-top">
+            <strong>${item.title}</strong>
+            <span class="muted">${item.time}</span>
+          </div>
+          <div>${item.body}</div>
+          <div class="muted" style="margin-top:6px;">Round ${item.round} | ${item.turn}</div>
+        </div>
+      `).join('');
+    }
+
+    function nowText() {
+      return new Date().toLocaleString('pt-BR');
+    }
+
+    function formatRollText(roll) {
+      return `[${roll.rolls.join(', ')}] = ${roll.sum}, atributo ${roll.attributeValue}, bônus crítico ${roll.critBonus}, total ${roll.total}`;
+    }
+
+    function attrLabel(key) {
+      if (key === 'poder') return 'Poder';
+      if (key === 'habilidade') return 'Habilidade';
+      return 'Resistência';
+    }
+
+    function resolveAction() {
+      const mode = elements.modeAction.value;
+      const actor = getFighterById(elements.actorSelect.value);
+      const target = getFighterById(elements.targetSelect.value);
+      if (!actor) return;
+
+      const actorAttrKey = elements.actorAttr.value;
+      const actorAttrLabel = attrLabel(actorAttrKey);
+      const actorRoll = rollCheck(actor[actorAttrKey], 'atk');
+
+      if (mode === 'meta') {
+        const meta = clamp(parseInt(elements.customMeta.value || '12', 10), 1, 999);
+        const success = !actorRoll.criticalFail && actorRoll.total >= meta;
+        const doubled = !actorRoll.criticalFail && actorRoll.total >= meta * 2;
+        const className = actorRoll.criticalFail ? 'critical-fail' : doubled ? 'double' : success ? 'success' : 'fail';
+        const status = actorRoll.criticalFail ? 'Falha crítica' : doubled ? 'Dobrou a meta' : success ? 'Sucesso' : 'Falha';
+
+        elements.resultCard.className = `result-card ${className}`;
+        elements.resultCard.innerHTML = `
+          <h3 style="margin-bottom:10px;">${status}</h3>
+          <div><strong>${actor.name}</strong> usou <strong>${actorAttrLabel}</strong> contra meta <strong>${meta}</strong>.</div>
+          <div style="margin-top:10px;">${formatRollText(actorRoll)}</div>
+          <div class="actions" style="margin-top:16px;">
+            <button class="btn-primary" id="rollActionBtn" type="button">Resolver ação</button>
+            <button class="btn-secondary" id="clearHistoryBtn" type="button">Limpar histórico</button>
+          </div>
+        `;
+        rebindResultButtons();
+
+        addHistory({
+          className,
+          title: `${actor.name} - ${status}`,
+          body: `${actor.name} rolou com ${actorAttrLabel} contra meta ${meta}. ${formatRollText(actorRoll)}.`,
+          time: nowText(),
+          round: state.round,
+          turn: state.initiative[state.currentIndex]?.displayName || state.initiative[state.currentIndex]?.name || 'Sem iniciativa'
+        });
+        return;
+      }
+
+      if (!target) return;
+      const defenseKey = elements.defenseType.value;
+      const defenseLabel = defenseKey === 'poder' ? 'Contra-ataque (Poder)' : defenseKey === 'habilidade' ? 'Esquiva (Habilidade)' : 'Resistência';
+      const defenseRoll = rollCheck(target[defenseKey], 'def');
+
+      let winner = 'Empate crítico';
+      let className = 'duel';
+      if (actorRoll.criticalFail && !defenseRoll.criticalFail) {
+        winner = `${target.name} defendeu`;
+        className = 'critical-fail';
+      } else if (!actorRoll.criticalFail && defenseRoll.criticalFail) {
+        winner = `${actor.name} venceu`;
+        className = 'success';
+      } else if (!actorRoll.criticalFail && !defenseRoll.criticalFail) {
+        if (actorRoll.total > defenseRoll.total) {
+          winner = `${actor.name} venceu`;
+          className = 'success';
+        } else {
+          winner = `${target.name} defendeu`;
+          className = 'fail';
+        }
+      }
+
+      elements.resultCard.className = `result-card ${className}`;
+      elements.resultCard.innerHTML = `
+        <h3 style="margin-bottom:10px;">${winner}</h3>
+        <div><strong>${actor.name}</strong> atacou com <strong>${actorAttrLabel}</strong>.</div>
+        <div><strong>${target.name}</strong> respondeu com <strong>${defenseLabel}</strong>.</div>
+        <div style="margin-top:10px;"><strong>${actor.name}:</strong> ${formatRollText(actorRoll)}</div>
+        <div style="margin-top:8px;"><strong>${target.name}:</strong> ${formatRollText(defenseRoll)}</div>
+        <div style="margin-top:10px;" class="muted">Em empate, a defesa vence. Os modificadores do ataque e da defesa são separados.</div>
+        <div class="actions" style="margin-top:16px;">
+          <button class="btn-primary" id="rollActionBtn" type="button">Resolver ação</button>
+          <button class="btn-secondary" id="clearHistoryBtn" type="button">Limpar histórico</button>
+        </div>
+      `;
+      rebindResultButtons();
+
+      addHistory({
+        className: className === 'duel' ? 'duel' : className,
+        title: `${actor.name} x ${target.name}`,
+        body: `${actor.name} usou ${actorAttrLabel}. ${target.name} respondeu com ${defenseLabel}. ${actor.name}: ${actorRoll.total}. ${target.name}: ${defenseRoll.total}. Resultado: ${winner}.`,
+        time: nowText(),
+        round: state.round,
+        turn: state.initiative[state.currentIndex]?.displayName || state.initiative[state.currentIndex]?.name || 'Sem iniciativa'
+      });
+    }
+
+    function resetCombat() {
+      state.initiative = [];
+      state.currentIndex = 0;
+      state.round = 1;
+      renderInitiative();
+      elements.resultCard.className = 'result-card';
+      elements.resultCard.innerHTML = `
+        <h3 style="margin-bottom:10px;">Combate reiniciado</h3>
+        <div class="muted">Os cards continuam preenchidos, mas a iniciativa e o fluxo do combate foram zerados.</div>
+        <div class="actions" style="margin-top:16px;">
+          <button class="btn-primary" id="rollActionBtn" type="button">Resolver ação</button>
+          <button class="btn-secondary" id="clearHistoryBtn" type="button">Limpar histórico</button>
+        </div>
+      `;
+      rebindResultButtons();
+    }
+
+    function updateModeUI() {
+      const isMeta = elements.modeAction.value === 'meta';
+      elements.customMetaWrap.style.display = isMeta ? 'block' : 'none';
+      elements.targetWrap.style.display = isMeta ? 'none' : 'block';
+      elements.defenseWrap.style.display = isMeta ? 'none' : 'block';
+      elements.defenseHint.textContent = isMeta
+        ? 'No teste com meta, o bloco defensivo fica disponível apenas como referência e não entra na rolagem.'
+        : 'No teste oposto, defesa e ataque usam seus próprios modificadores.';
+      elements.attackHint.textContent = isMeta
+        ? 'No teste com meta, apenas o lado ofensivo rola.'
+        : 'No teste oposto, o maior resultado vence. Em empate, a defesa prevalece.';
+    }
+
+    function rebindResultButtons() {
+      $('rollActionBtn').addEventListener('click', resolveAction);
+      $('clearHistoryBtn').addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistory();
+      });
+    }
+
+    elements.buildPlayersBtn.addEventListener('click', () => {
+      const count = clamp(parseInt(elements.playerCount.value || '1', 10), 1, 20);
+      elements.playerCount.value = count;
+      buildCards(elements.playersContainer, 'player', count);
+    });
+
+    elements.buildRivalsBtn.addEventListener('click', () => {
+      const count = clamp(parseInt(elements.rivalCount.value || '1', 10), 1, 20);
+      elements.rivalCount.value = count;
+      buildCards(elements.rivalsContainer, 'rival', count);
+    });
+
+    ['atk', 'def'].forEach(prefix => {
+      [elements[prefix + 'DadosBase'], elements[prefix + 'Pericia'], elements[prefix + 'Vantagem'], elements[prefix + 'Perdas']].forEach(el => {
+        el.addEventListener('change', () => updatePreview(prefix));
+      });
+    });
+
+    elements.playersContainer.addEventListener('input', refreshCombatantSelects);
+    elements.rivalsContainer.addEventListener('input', refreshCombatantSelects);
+    elements.generateInitiativeBtn.addEventListener('click', generateInitiative);
+    elements.advanceTurnBtn.addEventListener('click', advanceTurn);
+    elements.resetCombatBtn.addEventListener('click', resetCombat);
+    elements.modeAction.addEventListener('change', updateModeUI);
+    rebindResultButtons();
+
+    buildCards(elements.playersContainer, 'player', 1);
+    buildCards(elements.rivalsContainer, 'rival', 1);
+    updatePreview('atk');
+    updatePreview('def');
+    updateModeUI();
+    renderHistory();
+    renderInitiative();
+  </script>
+</body>
+</html>

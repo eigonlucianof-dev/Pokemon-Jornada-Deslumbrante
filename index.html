@@ -230,5 +230,51 @@
     });
   </script>
 
+<a href="Teste rápido JD.html" class="dado-flutuante" title="Ir para rolagem de dados">
+  <img src="dado.webp" alt="Rolagem de dados" />
+</a>
+
+<style>
+  .dado-flutuante {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+    animation: flutuar 2.2s ease-in-out infinite;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+
+  .dado-flutuante img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.35));
+  }
+
+  .dado-flutuante:hover {
+    transform: scale(1.06);
+    filter: brightness(1.08);
+  }
+
+  @keyframes flutuar {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .dado-flutuante {
+      right: 14px;
+      bottom: 14px;
+    }
+
+    .dado-flutuante img {
+      width: 60px;
+      height: 60px;
+    }
+  }
+</style>
+  
 </body>
 </html>

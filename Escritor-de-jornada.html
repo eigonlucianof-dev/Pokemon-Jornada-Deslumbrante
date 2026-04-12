@@ -750,45 +750,43 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(coletarDados()));
     }
 
-    function carregarDados() {
-      const salvo = localStorage.getItem(STORAGE_KEY);
+<script>
+  function carregarDados() {
+    const salvo = localStorage.getItem(STORAGE_KEY);
 
-      if (!salvo) {
-        for (let i = 0; i < 4; i++) adicionarPersonagemPrincipal();
-        return;
-      }
-
-      try {
-        const dados = JSON.parse(salvo);
-
-        document.getElementById("tituloAventura").value = dados.tituloAventura || "";
-        document.getElementById("incitaAventura").value = dados.incitaAventura || "";
-        document.getElementById("conflitoAventura").value = dados.conflitoAventura || "";
-        document.getElementById("climaxAventura").value = dados.climaxAventura || "";
-        document.getElementById("desfechoAventura").value = dados.desfechoAventura || "";
-        document.getElementById("sinopseAventura").value = dados.sinopseAventura || "";
-
-        document.getElementById("personagensPrincipais").innerHTML = "";
-        document.getElementById("sessoesContainer").innerHTML = "";
-
-        if (Array.isArray(dados.personagensPrincipais) && dados.personagensPrincipais.length) {
-          dados.personagensPrincipais.forEach(p => adicionarPersonagemPrincipal(p));
-        } else {
-          for (let i = 0; i < 4; i++) adicionarPersonagemPrincipal();
-        }
-
-        if (Array.isArray(dados.sessoes)) {
-          dados.sessoes.forEach(s => adicionarSessao(s));
-        }
-
-        bindAutoResize(document);
-        bindAutosave(document);
-        salvarDados();
-      } catch (erro) {
-        console.error(erro);
-        for (let i = 0; i < 4; i++) adicionarPersonagemPrincipal();
-      }
+    if (!salvo) {
+      return;
     }
+
+    try {
+      const dados = JSON.parse(salvo);
+
+      document.getElementById("tituloAventura").value = dados.tituloAventura || "";
+      document.getElementById("incitaAventura").value = dados.incitaAventura || "";
+      document.getElementById("conflitoAventura").value = dados.conflitoAventura || "";
+      document.getElementById("climaxAventura").value = dados.climaxAventura || "";
+      document.getElementById("desfechoAventura").value = dados.desfechoAventura || "";
+      document.getElementById("sinopseAventura").value = dados.sinopseAventura || "";
+
+      document.getElementById("personagensPrincipais").innerHTML = "";
+      document.getElementById("sessoesContainer").innerHTML = "";
+
+      if (Array.isArray(dados.personagensPrincipais) && dados.personagensPrincipais.length) {
+        dados.personagensPrincipais.forEach(p => adicionarPersonagemPrincipal(p));
+      }
+
+      if (Array.isArray(dados.sessoes)) {
+        dados.sessoes.forEach(s => adicionarSessao(s));
+      }
+
+      bindAutoResize(document);
+      bindAutosave(document);
+      salvarDados();
+    } catch (erro) {
+      console.error(erro);
+    }
+  }
+</script>
 
     function exportarDados() {
       const dados = coletarDados();

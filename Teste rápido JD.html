@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste Rápido - Pokémon Jornada Deslumbrante</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #111111;
+      --panel-2: #181818;
+      --text: #f4f4f4;
+      --muted: #b5b5b5;
+      --green: #00c853;
+      --red: #ff2d2d;
+      --yellow: #ffd600;
+      --border: #2b2b2b;
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #050505 0%, #0c0c0c 100%);
+      color: var(--text);
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    .title-box {
+      background: var(--panel);
+      border: 2px solid var(--green);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 22px;
+      box-shadow: 0 12px 24px var(--shadow);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2vw, 2.2rem);
+      color: var(--text);
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 20px var(--shadow);
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 1.08rem;
+      color: var(--green);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    input, select, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #303030;
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 0.96rem;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid rgba(0, 200, 83, 0.35);
+      border-color: var(--green);
+    }
+
+    .hint {
+      margin-top: 4px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .inline-info {
+      margin-top: 12px;
+      padding: 12px;
+      background: #0d0d0d;
+      border: 1px solid #252525;
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #0f7d3f 0%, #08642f 100%);
+      border-color: #0d8d46;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, #5d1111 0%, #440b0b 100%);
+      border-color: #7a1616;
+      font-weight: 700;
+      cursor: pointer;
+      max-width: 220px;
+    }
+
+    .summary-box {
+      background: #0d0d0d;
+      border: 1px solid #252525;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .result-card {
+      min-height: 170px;
+      background: #0b0b0b;
+      border: 3px solid #444;
+      border-radius: 18px;
+      padding: 18px;
+      transition: 0.25s ease;
+    }
+
+    .result-card.success {
+      border-color: var(--green);
+      box-shadow: 0 0 0 1px rgba(0, 200, 83, 0.15), 0 12px 26px rgba(0, 200, 83, 0.08);
+    }
+
+    .result-card.fail {
+      border-color: var(--red);
+      box-shadow: 0 0 0 1px rgba(255, 45, 45, 0.15), 0 12px 26px rgba(255, 45, 45, 0.08);
+    }
+
+    .result-card.double {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 1px rgba(255, 214, 0, 0.18), 0 12px 26px rgba(255, 214, 0, 0.08);
+    }
+
+    .result-card.critical-fail {
+      background: linear-gradient(180deg, #7a1010 0%, #540909 100%);
+      border-color: #ff8b8b;
+      color: #fff;
+      box-shadow: 0 12px 26px rgba(255, 45, 45, 0.18);
+    }
+
+    .status {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 12px;
+      background: #161616;
+      border: 1px solid #333;
+    }
+
+    .result-title {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+    }
+
+    .result-main {
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: #f0f0f0;
+    }
+
+    .math {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .history-item {
+      background: #0d0d0d;
+      border: 1px solid #242424;
+      border-left: 5px solid #444;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .history-item.success { border-left-color: var(--green); }
+    .history-item.fail { border-left-color: var(--red); }
+    .history-item.double { border-left-color: var(--yellow); }
+    .history-item.critical-fail { border-left-color: #ff9e9e; background: #2b0b0b; }
+
+    .history-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .history-title {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .history-meta,
+    .history-text {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 12px;
+      border: 1px dashed #333;
+      border-radius: 12px;
+      text-align: center;
+      background: #0b0b0b;
+    }
+
+    @media (max-width: 820px) {
+      .grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-secondary {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title-box">
+      <h1>Teste Rápido - Pokémon Jornada Deslumbrante</h1>
+      <div class="subtitle">Rolagem de testes com 1d6 a 3d6, cálculo automático de sucesso, dobra de meta, crítico e falha crítica.</div>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Configurar Rolagem</h2>
+
+        <div class="form-grid">
+          <div>
+            <label for="tipoRolagem">Tipo de rolagem</label>
+            <select id="tipoRolagem">
+              <option value="Treinador">Treinador</option>
+              <option value="Pokémon">Pokémon</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="identificador">Identificador</label>
+            <input id="identificador" type="text" placeholder="Nome do jogador ou do Pokémon (opcional)" maxlength="60" />
+          </div>
+
+          <div>
+            <label for="atributoNome">Atributo usado</label>
+            <select id="atributoNome">
+              <option value="Poder">Poder</option>
+              <option value="Resistência">Resistência</option>
+              <option value="Habilidade">Habilidade</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="atributoValor">Valor do atributo</label>
+            <input id="atributoValor" type="number" min="0" max="50" value="0" />
+            <div class="hint">Valor permitido: de 0 até 50.</div>
+          </div>
+
+          <div>
+            <label for="dadosBase">Dados base</label>
+            <select id="dadosBase">
+              <option value="1">1d6</option>
+              <option value="2">2d6</option>
+              <option value="3">3d6</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="pericia">Possui perícia adequada à situação?</label>
+            <select id="pericia">
+              <option value="nao">Não</option>
+              <option value="sim">Sim</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="vantagem">Possui uma vantagem/ganho?</label>
+            <select id="vantagem">
+              <option value="nao">Não</option>
+              <option value="sim">Sim</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="perdas">Há perdas?</label>
+            <select id="perdas">
+              <option value="0">Não</option>
+              <option value="1">1 perda</option>
+              <option value="2">2 perdas</option>
+              <option value="3">3 perdas</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="chanceCritica">Há aumento de chance crítica?</label>
+            <select id="chanceCritica">
+              <option value="nao">Não</option>
+              <option value="sim">Sim</option>
+            </select>
+            <div class="hint">Com aumento de chance crítica, 5 e 6 contam como crítico.</div>
+          </div>
+
+          <div>
+            <label for="meta">Meta</label>
+            <select id="meta">
+              <option value="6">Fácil (6)</option>
+              <option value="9">Médio (9)</option>
+              <option value="12" selected>Difícil (12)</option>
+              <option value="15">Muito Difícil (15)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="inline-info" id="previewDados">
+          Dados finais previstos: <strong>1d6</strong>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" id="rolarBtn">Rolar teste</button>
+          <button class="btn-secondary" id="limparHistoricoBtn" type="button">Limpar histórico</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Resultado</h2>
+
+        <div class="summary-box">
+          A rolagem soma os dados com o atributo. Cada resultado crítico soma o atributo mais uma vez. Falha crítica acontece quando <strong>todos os dados caem em 1</strong>.
+        </div>
+
+        <div class="result-card" id="resultadoCard">
+          <div class="status">Aguardando rolagem</div>
+          <h3 class="result-title">Nenhum teste feito ainda</h3>
+          <div class="result-main">Preencha os campos e clique em <strong>Rolar teste</strong>.</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top: 18px;">
+      <h2>Histórico das últimas rolagens</h2>
+      <div class="history-list" id="historicoLista">
+        <div class="empty">Ainda não há rolagens salvas.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const elementos = {
+      tipoRolagem: document.getElementById('tipoRolagem'),
+      identificador: document.getElementById('identificador'),
+      atributoNome: document.getElementById('atributoNome'),
+      atributoValor: document.getElementById('atributoValor'),
+      dadosBase: document.getElementById('dadosBase'),
+      pericia: document.getElementById('pericia'),
+      vantagem: document.getElementById('vantagem'),
+      perdas: document.getElementById('perdas'),
+      chanceCritica: document.getElementById('chanceCritica'),
+      meta: document.getElementById('meta'),
+      previewDados: document.getElementById('previewDados'),
+      rolarBtn: document.getElementById('rolarBtn'),
+      limparHistoricoBtn: document.getElementById('limparHistoricoBtn'),
+      resultadoCard: document.getElementById('resultadoCard'),
+      historicoLista: document.getElementById('historicoLista')
+    };
+
+    const STORAGE_KEY = 'jd_teste_rapido_historico';
+
+    function limitar(valor, min, max) {
+      return Math.min(Math.max(valor, min), max);
+    }
+
+    function calcularDadosFinais() {
+      const base = parseInt(elementos.dadosBase.value, 10);
+      const pericia = elementos.pericia.value === 'sim' ? 1 : 0;
+      const vantagem = elementos.vantagem.value === 'sim' ? 1 : 0;
+      const perdas = parseInt(elementos.perdas.value, 10);
+
+      const total = limitar(base + pericia + vantagem - perdas, 1, 3);
+      return total;
+    }
+
+    function atualizarPreview() {
+      const total = calcularDadosFinais();
+      elementos.previewDados.innerHTML = `Dados finais previstos: <strong>${total}d6</strong>`;
+    }
+
+    function rolarD6() {
+      return Math.floor(Math.random() * 6) + 1;
+    }
+
+    function obterHistorico() {
+      try {
+        const salvo = localStorage.getItem(STORAGE_KEY);
+        return salvo ? JSON.parse(salvo) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function salvarHistorico(lista) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+    }
+
+    function formatarHorario() {
+      return new Date().toLocaleString('pt-BR');
+    }
+
+    function gerarStatus(resultado) {
+      if (resultado.falhaCritica) return 'Falha Crítica';
+      if (resultado.dobrouMeta) return 'Dobrou a Meta';
+      if (resultado.sucesso) return 'Sucesso';
+      return 'Falha';
+    }
+
+    function gerarClasse(resultado) {
+      if (resultado.falhaCritica) return 'critical-fail';
+      if (resultado.dobrouMeta) return 'double';
+      if (resultado.sucesso) return 'success';
+      return 'fail';
+    }
+
+    function renderizarResultado(resultado) {
+      const classe = gerarClasse(resultado);
+      const status = gerarStatus(resultado);
+
+      elementos.resultadoCard.className = `result-card ${classe}`;
+      elementos.resultadoCard.innerHTML = `
+        <div class="status">${status}</div>
+        <h3 class="result-title">${resultado.tipoRolagem}${resultado.identificador ? ' - ' + resultado.identificador : ''}</h3>
+        <div class="result-main">
+          Foram rolados <strong>${resultado.dadosFinais}d6</strong> com <strong>${resultado.atributoNome} ${resultado.atributoValor}</strong>.<br>
+          Resultado final: <strong>${resultado.totalFinal}</strong> contra meta <strong>${resultado.meta}</strong>.
+        </div>
+        <div class="math">
+          Dados: [${resultado.dados.join(', ')}] = ${resultado.somaDados}<br>
+          + ${resultado.atributoNome}: ${resultado.atributoValor}<br>
+          + Bônus de crítico: ${resultado.bonusCritico} (${resultado.qtdCriticos} crítico${resultado.qtdCriticos === 1 ? '' : 's'})<br>
+          Total: ${resultado.somaDados} + ${resultado.atributoValor} + ${resultado.bonusCritico} = <strong>${resultado.totalFinal}</strong>
+        </div>
+      `;
+    }
+
+    function renderizarHistorico() {
+      const historico = obterHistorico();
+
+      if (!historico.length) {
+        elementos.historicoLista.innerHTML = '<div class="empty">Ainda não há rolagens salvas.</div>';
+        return;
+      }
+
+      elementos.historicoLista.innerHTML = historico
+        .map(item => `
+          <div class="history-item ${item.classe}">
+            <div class="history-head">
+              <div class="history-title">${item.tipoRolagem}${item.identificador ? ' - ' + item.identificador : ''}</div>
+              <div class="history-meta">${item.data}</div>
+            </div>
+            <div class="history-text">
+              <strong>${item.status}</strong> | ${item.dadosFinais}d6 | ${item.atributoNome} ${item.atributoValor} | Meta ${item.meta}
+            </div>
+            <div class="history-text">
+              Dados: [${item.dados.join(', ')}] | Total final: <strong>${item.totalFinal}</strong>
+            </div>
+          </div>
+        `)
+        .join('');
+    }
+
+    function adicionarAoHistorico(resultado) {
+      let historico = obterHistorico();
+
+      if (historico.length >= 5) {
+        historico = [];
+      }
+
+      historico.unshift({
+        tipoRolagem: resultado.tipoRolagem,
+        identificador: resultado.identificador,
+        atributoNome: resultado.atributoNome,
+        atributoValor: resultado.atributoValor,
+        meta: resultado.meta,
+        dadosFinais: resultado.dadosFinais,
+        dados: resultado.dados,
+        totalFinal: resultado.totalFinal,
+        status: gerarStatus(resultado),
+        classe: gerarClasse(resultado),
+        data: formatarHorario()
+      });
+
+      salvarHistorico(historico);
+      renderizarHistorico();
+    }
+
+    function executarRolagem() {
+      const tipoRolagem = elementos.tipoRolagem.value;
+      const identificador = elementos.identificador.value.trim();
+      const atributoNome = elementos.atributoNome.value;
+      const atributoValor = limitar(parseInt(elementos.atributoValor.value || '0', 10), 0, 50);
+      const meta = parseInt(elementos.meta.value, 10);
+      const dadosFinais = calcularDadosFinais();
+      const criticoExpandido = elementos.chanceCritica.value === 'sim';
+
+      elementos.atributoValor.value = atributoValor;
+
+      const dados = Array.from({ length: dadosFinais }, rolarD6);
+      const somaDados = dados.reduce((acc, valor) => acc + valor, 0);
+      const limiarCritico = criticoExpandido ? 5 : 6;
+      const qtdCriticos = dados.filter(valor => valor >= limiarCritico).length;
+      const bonusCritico = qtdCriticos * atributoValor;
+      const totalFinal = somaDados + atributoValor + bonusCritico;
+      const falhaCritica = dados.every(valor => valor === 1);
+      const sucesso = !falhaCritica && totalFinal >= meta;
+      const dobrouMeta = !falhaCritica && totalFinal >= meta * 2;
+
+      const resultado = {
+        tipoRolagem,
+        identificador,
+        atributoNome,
+        atributoValor,
+        meta,
+        dadosFinais,
+        dados,
+        somaDados,
+        qtdCriticos,
+        bonusCritico,
+        totalFinal,
+        falhaCritica,
+        sucesso,
+        dobrouMeta
+      };
+
+      renderizarResultado(resultado);
+      adicionarAoHistorico(resultado);
+    }
+
+    [
+      elementos.dadosBase,
+      elementos.pericia,
+      elementos.vantagem,
+      elementos.perdas
+    ].forEach(campo => campo.addEventListener('change', atualizarPreview));
+
+    elementos.rolarBtn.addEventListener('click', executarRolagem);
+
+    elementos.limparHistoricoBtn.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      renderizarHistorico();
+    });
+
+    atualizarPreview();
+    renderizarHistorico();
+  </script>
+</body>
+</html>

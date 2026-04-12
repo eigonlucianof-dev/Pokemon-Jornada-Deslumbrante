@@ -15,16 +15,52 @@
       margin: 0;
     }
 
-.logo {
-  width: 360px;
-  max-width: 90%;
-  margin-bottom: 15px;
-  filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.4));
-}
+    .logo {
+      width: 360px;
+      max-width: 90%;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.4));
+    }
 
     h1 {
       color: #ff3b3b;
       margin-bottom: 25px;
+    }
+
+    /* 🔴 ESTILO DO CARD (faltava isso) */
+    .card {
+      background: #111;
+      border: 2px solid #ff2d2d;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 300px;
+      box-shadow: 0 0 15px rgba(255, 45, 45, 0.2);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: white;
+    }
+
+    .card p {
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #ff2d2d;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .card a:hover {
+      background: #ff4d4d;
     }
   </style>
 </head>
@@ -34,10 +70,10 @@
   <h1>Ferramentas do Mestre</h1>
 
   <div class="card">
-  <h2>Controle de Combate</h2>
-  <p>Controle jogadores, rivais, iniciativa, rounds, técnicas e rolagens no mesmo lugar</p>
-  <a href="controle%de%combate.html">Abrir controlador</a>
-</div>
+    <h2>Controle de Combate</h2>
+    <p>Controle jogadores, rivais, iniciativa, rounds, técnicas e rolagens no mesmo lugar</p>
+    <a href="controle-de-combate.html">Abrir controlador</a>
+  </div>
   
 </body>
 </html>

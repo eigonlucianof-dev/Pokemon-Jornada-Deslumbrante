@@ -7,9 +7,10 @@
 
   <style>
     body {
+      margin: 0;
       background: #000;
       color: white;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 30px;
     }
@@ -26,7 +27,7 @@
       margin-bottom: 25px;
     }
 
-    /* CARD BASE (pra você usar depois) */
+    /* CARD BASE (pra usar depois) */
     .card {
       background: #111;
       border: 1px solid #ff3b3b;
@@ -56,12 +57,13 @@
 <body>
 
   <!-- LOGO -->
-  <img src="redlogo.webp" alt="Logo" class="logo">
+  <img src="../redlogo.webp" alt="Logo" class="logo">
 
   <!-- TÍTULO -->
   <h1>Ferramentas do Mestre</h1>
 
-  <!-- (SEM CARDS POR ENQUANTO) -->
+  <!-- ÁREA FUTURA DOS CARDS -->
+  <div id="cards"></div>
 
 </body>
 </html>

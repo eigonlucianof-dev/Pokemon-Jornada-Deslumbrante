@@ -13,36 +13,40 @@
     }
 
     body {
-      background: linear-gradient(180deg, #eaf6ff, #ffffff);
-      color: #1f2937;
+      background: linear-gradient(180deg, #000000, #0a0a0a);
+      color: white;
     }
 
     header {
-      background: linear-gradient(90deg, #ef4444, #dc2626);
+      background: linear-gradient(90deg, #0f0f0f, #1a1a1a);
       color: white;
-      padding: 20px;
+      padding: 24px 20px;
       text-align: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+      border-bottom: 2px solid #22c55e;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
     }
 
     header h1 {
       font-size: 2rem;
       margin-bottom: 8px;
+      color: #22c55e;
     }
 
     header p {
       font-size: 1rem;
-      opacity: 0.95;
+      color: white;
+      opacity: 0.9;
     }
 
     nav {
-      background: white;
+      background: #111111;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
       padding: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-bottom: 1px solid #22c55e;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
       position: sticky;
       top: 0;
       z-index: 10;
@@ -50,16 +54,18 @@
 
     nav a {
       text-decoration: none;
-      color: #dc2626;
+      color: white;
       font-weight: bold;
-      padding: 10px 16px;
+      padding: 10px 18px;
       border-radius: 999px;
       transition: 0.2s;
-      background: #fff5f5;
+      background: #1a1a1a;
+      border: 1px solid #22c55e;
     }
 
     nav a:hover {
-      background: #fecaca;
+      background: #22c55e;
+      color: black;
       transform: translateY(-1px);
     }
 
@@ -73,13 +79,13 @@
     .hero h2 {
       font-size: 2rem;
       margin-bottom: 12px;
-      color: #111827;
+      color: #22c55e;
     }
 
     .hero p {
       font-size: 1.05rem;
       margin-bottom: 24px;
-      color: #4b5563;
+      color: #e5e7eb;
     }
 
     .botoes {
@@ -92,17 +98,17 @@
 
     .botao {
       text-decoration: none;
-      background: #2563eb;
-      color: white;
+      background: #22c55e;
+      color: black;
       padding: 14px 20px;
       border-radius: 12px;
       font-weight: bold;
       transition: 0.2s;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 4px 10px rgba(34, 197, 94, 0.25);
     }
 
     .botao:hover {
-      background: #1d4ed8;
+      background: #16a34a;
       transform: translateY(-2px);
     }
 
@@ -116,10 +122,11 @@
     }
 
     .card {
-      background: white;
+      background: #111111;
+      border: 1px solid #22c55e;
       border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
       transition: 0.2s;
     }
 
@@ -129,19 +136,19 @@
 
     .card h3 {
       margin-bottom: 10px;
-      color: #dc2626;
+      color: #22c55e;
     }
 
     .card p {
       margin-bottom: 14px;
-      color: #4b5563;
+      color: #e5e7eb;
       line-height: 1.5;
     }
 
     .card a {
       text-decoration: none;
-      color: white;
-      background: #dc2626;
+      color: black;
+      background: #22c55e;
       padding: 10px 14px;
       display: inline-block;
       border-radius: 10px;
@@ -149,15 +156,16 @@
     }
 
     .card a:hover {
-      background: #b91c1c;
+      background: #16a34a;
     }
 
     footer {
-      background: #111827;
+      background: #0a0a0a;
       color: white;
       text-align: center;
       padding: 20px;
       margin-top: 30px;
+      border-top: 1px solid #22c55e;
     }
 
     @media (max-width: 600px) {
@@ -183,52 +191,37 @@
 
   <header>
     <h1>Pokémon Jornada Deslumbrante</h1>
-    <p>Site oficial do meu RPG de Pokémon</p>
+    <p>Pokémon Jornada Deslumbrante © 2026</p>
   </header>
 
   <nav>
-    <a href="index.html">Início</a>
-    <a href="regras.html">Regras</a>
-    <a href="fichas.html">Fichas</a>
-    <a href="movimentos.html">Movimentos</a>
-    <a href="ferramentas.html">Ferramentas</a>
+    <a href="apoiadores.html">Apoiadores</a>
+    <a href="jornada.html">Jornada</a>
   </nav>
 
   <section class="hero">
     <h2>Bem-vindo ao universo de Jornada Deslumbrante</h2>
     <p>
-      Aqui você encontra regras, adaptações, fichas e ferramentas para jogar o RPG.
+      Aqui você encontra páginas, conteúdos e recursos do projeto.
     </p>
 
     <div class="botoes">
-      <a class="botao" href="regras.html">Ver Regras</a>
-      <a class="botao" href="ferramentas.html">Abrir Ferramentas</a>
+      <a class="botao" href="jornada.html">Abrir Jornada</a>
+      <a class="botao" href="apoiadores.html">Ver Apoiadores</a>
     </div>
   </section>
 
   <section class="secoes">
     <div class="card">
-      <h3>Regras</h3>
-      <p>Veja as regras principais do sistema, combate e funcionamento do RPG.</p>
-      <a href="regras.html">Acessar</a>
+      <h3>Jornada</h3>
+      <p>Acesse a área principal do projeto e seus conteúdos.</p>
+      <a href="jornada.html">Acessar</a>
     </div>
 
     <div class="card">
-      <h3>Fichas</h3>
-      <p>Área para fichas de personagens, Pokémon e modelos prontos.</p>
-      <a href="fichas.html">Acessar</a>
-    </div>
-
-    <div class="card">
-      <h3>Movimentos</h3>
-      <p>Consulte adaptações de golpes e recursos ligados aos movimentos.</p>
-      <a href="movimentos.html">Acessar</a>
-    </div>
-
-    <div class="card">
-      <h3>Ferramentas</h3>
-      <p>Abra suas páginas em HTML, como adaptadores e recursos de treinador.</p>
-      <a href="ferramentas.html">Acessar</a>
+      <h3>Apoiadores</h3>
+      <p>Espaço reservado para nomes, créditos e agradecimentos.</p>
+      <a href="apoiadores.html">Acessar</a>
     </div>
   </section>
 

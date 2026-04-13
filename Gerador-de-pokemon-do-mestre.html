@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controlador de Pokémon — Mestre (Pokédex Completa)</title>
+  <style>
+    /* ========== ESTILOS (mesmo visual refinado) ========== */
+    :root{
+      --bg:#000000;
+      --panel:#0a0a0a;
+      --panel-2:#101010;
+      --line:#7a2222;
+      --line-soft:#4e1717;
+      --text:#f3f3f3;
+      --muted:#b9aaaa;
+      --accent:#c54848;
+      --accent-soft:#341313;
+      --danger:#a92d2d;
+      --ok:#3aa56a;
+      --warn:#d0a24d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+      padding:20px;
+    }
+    .wrap{ max-width:1200px; margin:0 auto; }
+    .hero{
+      text-align:center;
+      margin-bottom:20px;
+      padding:22px 18px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(197,72,72,0.10), rgba(0,0,0,0.35));
+    }
+    h1{ margin:0; font-size:2rem; color:var(--accent); letter-spacing:0.4px; }
+    .subtitle{ margin-top:8px; color:var(--muted); font-size:0.98rem; }
+    .layout{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 0 0 1px rgba(197,72,72,0.05) inset;
+    }
+    .panel h2{ margin:0 0 14px 0; font-size:1.08rem; color:var(--accent); }
+    .field{ margin-bottom:14px; }
+    .field label{ display:block; margin-bottom:7px; font-weight:bold; color:#f2dede; }
+    .field small{ display:block; color:var(--muted); margin-top:6px; line-height:1.45; }
+    select, button, input, textarea{ font:inherit; }
+    select, input[type="number"], input[type="text"], textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--line-soft);
+      background:var(--panel-2);
+      color:var(--text);
+      outline:none;
+    }
+    textarea{ resize:vertical; min-height:90px; }
+    .triple{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .double{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    .check{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      background:rgba(197,72,72,0.08);
+      border:1px solid var(--line-soft);
+      padding:12px;
+      border-radius:12px;
+      line-height:1.45;
+      margin-bottom:10px;
+    }
+    .check input{ margin-top:4px; transform:scale(1.12); accent-color:var(--accent); width:auto; }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    button{
+      cursor:pointer;
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:bold;
+      transition:transform .12s ease, opacity .12s ease, background .12s ease;
+    }
+    button:hover{ transform:translateY(-1px); }
+    .primary{ background:var(--accent); color:#130505; }
+    .secondary{ background:#121212; color:#ece0e0; border:1px solid var(--line-soft); }
+    .danger{ background:var(--danger); color:#fff; }
+    .cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
+    .stat-card{
+      background:linear-gradient(180deg, rgba(197,72,72,0.10), rgba(255,255,255,0.02));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      text-align:center;
+      min-height:132px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .stat-card h3{ margin:0 0 8px 0; color:#ffe3e3; font-size:1rem; }
+    .value{ font-size:2.1rem; font-weight:bold; color:var(--accent); line-height:1; margin-bottom:8px; }
+    .rank{ color:var(--muted); font-size:0.95rem; }
+    .meta{
+      margin-top:14px;
+      padding:14px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--line-soft);
+      line-height:1.5;
+    }
+    .pill{
+      display:inline-block;
+      padding:4px 9px;
+      border-radius:999px;
+      border:1px solid var(--line-soft);
+      background:rgba(197,72,72,0.08);
+      color:#f1d3d3;
+      font-size:0.88rem;
+      margin-right:6px;
+      margin-bottom:6px;
+    }
+    .note{ color:var(--muted); font-size:0.94rem; margin-top:12px; line-height:1.5; }
+    .warning{
+      color:#ffd7d7;
+      background:rgba(125,31,31,0.25);
+      border:1px solid #6e2727;
+      border-radius:12px;
+      padding:10px 12px;
+      margin-top:10px;
+      display:none;
+    }
+    .success{
+      color:#d9ffe8;
+      background:rgba(58,165,106,0.18);
+      border:1px solid rgba(58,165,106,0.5);
+      border-radius:12px;
+      padding:10px 12px;
+      margin-top:10px;
+      display:none;
+    }
+    .empty{
+      color:var(--muted);
+      text-align:center;
+      padding:22px 12px;
+      border:1px dashed var(--line-soft);
+      border-radius:14px;
+      margin-top:12px;
+    }
+    .poke-card{
+      margin-top:14px;
+      padding:16px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(197,72,72,0.08), rgba(255,255,255,0.02));
+    }
+    .poke-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .poke-name{ font-size:1.25rem; font-weight:bold; color:#ffe7e7; }
+    .tag{
+      display:inline-block;
+      padding:5px 10px;
+      border-radius:999px;
+      border:1px solid var(--line-soft);
+      color:#f2d5d5;
+      background:rgba(197,72,72,0.08);
+      font-size:0.85rem;
+    }
+    .manual-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px; }
+    .subpanel{
+      border:1px solid var(--line-soft);
+      border-radius:12px;
+      padding:12px;
+      background:rgba(255,255,255,0.02);
+    }
+    .subpanel strong{ display:block; margin-bottom:7px; color:#ffe3e3; }
+    .vigor-bar-wrap{ margin-top:10px; width:100%; height:16px; border-radius:999px; overflow:hidden; border:1px solid var(--line-soft); background:#140909; }
+    .vigor-bar{ height:100%; width:100%; background:linear-gradient(90deg, #a33333, #d45e5e); transition:width .2s ease; }
+    .impact-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .impact-btn{
+      background:#181010;
+      color:#f0dada;
+      border:1px solid var(--line-soft);
+      padding:10px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+    .impact-btn:hover{ background:#221212; }
+    .mini{ font-size:0.9rem; color:var(--muted); margin-top:6px; }
+    .divider{ height:1px; background:linear-gradient(90deg, transparent, var(--line-soft), transparent); margin:16px 0; }
+    @media (max-width: 980px){ .layout{grid-template-columns:1fr} }
+    @media (max-width: 720px){
+      .triple, .double, .cards, .manual-grid{grid-template-columns:1fr}
+      body{padding:14px}
+      h1{font-size:1.7rem}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>Controlador de Pokémon</h1>
+    <div class="subtitle">Ferramenta do mestre — Pokédex atualizada (gens 6, 7, 8) com todos os lendários</div>
+  </section>
+
+  <section class="layout">
+    <!-- Painel IVs (corrigido, anômalo funcional) -->
+    <div class="panel">
+      <h2>Gerador de IVs (rolagem 1d6)</h2>
+      <div class="field">
+        <label>Atributo Prioridade</label>
+        <div class="triple">
+          <select id="primary"><option value="">Principal automático</option><option value="Poder">Poder</option><option value="Habilidade">Habilidade</option><option value="Resistência">Resistência</option></select>
+          <select id="secondary"><option value="">Secundário automático</option><option value="Poder">Poder</option><option value="Habilidade">Habilidade</option><option value="Resistência">Resistência</option></select>
+          <select id="tertiary"><option value="">Terciário automático</option><option value="Poder">Poder</option><option value="Habilidade">Habilidade</option><option value="Resistência">Resistência</option></select>
+        </div>
+        <small>Os valores são gerados por rolagem de 1d6 para cada atributo, depois ordenados conforme a prioridade.</small>
+      </div>
+      <div class="field">
+        <label>Escala do Pokémon (para limites)</label>
+        <select id="scale"><option value="basico">Básico (limite 1-5)</option><option value="lendario">Lendário (limite 1-6)</option></select>
+      </div>
+      <div class="check"><input type="checkbox" id="pseudo"><div><strong>Forçar status para Pseudo-Lendário?</strong><br>Permite um atributo 6, mas mantém os outros dentro dos limites.</div></div>
+      <div class="check"><input type="checkbox" id="perfect"><div><strong>Forçar IVs perfeitos?</strong><br>Apenas para Lendário. Gera 6 em todos os atributos.</div></div>
+      <div class="check"><input type="checkbox" id="anomalous"><div><strong>Gerar IVs anômalo?</strong><br>Um atributo ganha +1 e outro perde -1 (aplicado após os limites).</div></div>
+      <div class="warning" id="warningBox"></div>
+      <div class="success" id="successBox"></div>
+      <div class="actions"><button class="primary" id="generateIvBtn">Rolar IVs (1d6)</button></div>
+      <div class="note"><strong>Regras:</strong> Básico 1-5, Lendário 1-6, Pseudo garante um 6, Anômalo +1/-1.</div>
+      <div id="ivResult"><div class="empty">Nenhum IV gerado ainda.</div></div>
+    </div>
+
+    <!-- Painel Pokémon -->
+    <div class="panel">
+      <h2>Gerador de Pokémon do Mestre</h2>
+      <div class="field">
+        <label>Quantidade de Pokémon</label>
+        <input type="number" id="pokeAmount" min="1" max="12" value="1">
+      </div>
+      <div class="double">
+        <div class="field">
+          <label>Geração</label>
+          <select id="generationFilter">
+            <option value="">Aleatória</option>
+            <option value="6">6ª geração (Kalos)</option>
+            <option value="7">7ª geração (Alola)</option>
+            <option value="8">8ª geração (Galar/Hisui)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tipo de geração do card</label>
+          <select id="pokemonCategoryFilter">
+            <option value="basico">Básico (apenas comuns)</option>
+            <option value="lendario">Lendário (apenas lendários)</option>
+            <option value="auto" selected>Automático (pela espécie)</option>
+          </select>
+          <small>Define quais Pokémon podem ser sorteados.</small>
+        </div>
+      </div>
+      <div class="check">
+        <input type="checkbox" id="isShiny">
+        <div><strong>Marcar como Radiante (Shiny)</strong><br>Apenas efeito visual (selo dourado).</div>
+      </div>
+      <div class="field">
+        <label>Número de jogadores</label>
+        <input type="number" id="playersCount" min="1" max="20" value="4">
+      </div>
+      <div class="field">
+        <label>Modificador de vigor</label>
+        <select id="vigorMod">
+          <option value="-2">Frágil (-2)</option>
+          <option value="0" selected>Básico (+0)</option>
+          <option value="4">Lendário (+4)</option>
+        </select>
+        <small>Vigor = (jogadores × 3) + modificador.</small>
+      </div>
+      <div class="actions">
+        <button class="primary" id="generatePokemonBtn">Gerar Pokémon</button>
+        <button class="secondary" id="clearPokemonBtn">Limpar cards</button>
+      </div>
+      <div id="pokemonArea"><div class="empty">Nenhum Pokémon gerado ainda.</div></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const ATTRS = ["Poder", "Habilidade", "Resistência"];
+  const RANKS = {1:"Fraco",2:"Comum",3:"Bom",4:"Forte",5:"Especialista",6:"Mestre",7:"Anômalo"};
+
+  // ================== POKÉDEX COMPLETA ==================
+  const POKEDEX = [
+    // ---------- GERAÇÃO 6 (KALOS) - BÁSICOS ----------
+    { numero: 650, nome: "Chespin", geracao: 6, categoria: "basico" },
+    { numero: 651, nome: "Quilladin", geracao: 6, categoria: "basico" },
+    { numero: 652, nome: "Chesnaught", geracao: 6, categoria: "basico" },
+    { numero: 653, nome: "Fennekin", geracao: 6, categoria: "basico" },
+    { numero: 654, nome: "Braixen", geracao: 6, categoria: "basico" },
+    { numero: 655, nome: "Delphox", geracao: 6, categoria: "basico" },
+    { numero: 656, nome: "Froakie", geracao: 6, categoria: "basico" },
+    { numero: 657, nome: "Frogadier", geracao: 6, categoria: "basico" },
+    { numero: 658, nome: "Greninja", geracao: 6, categoria: "basico" },
+    { numero: 659, nome: "Bunnelby", geracao: 6, categoria: "basico" },
+    { numero: 660, nome: "Diggersby", geracao: 6, categoria: "basico" },
+    { numero: 661, nome: "Fletchling", geracao: 6, categoria: "basico" },
+    { numero: 662, nome: "Fletchinder", geracao: 6, categoria: "basico" },
+    { numero: 663, nome: "Talonflame", geracao: 6, categoria: "basico" },
+    { numero: 664, nome: "Scatterbug", geracao: 6, categoria: "basico" },
+    { numero: 665, nome: "Spewpa", geracao: 6, categoria: "basico" },
+    { numero: 666, nome: "Vivillon", geracao: 6, categoria: "basico" },
+    { numero: 667, nome: "Litleo", geracao: 6, categoria: "basico" },
+    { numero: 668, nome: "Pyroar", geracao: 6, categoria: "basico" },
+    { numero: 669, nome: "Flabébé", geracao: 6, categoria: "basico" },
+    { numero: 670, nome: "Floette", geracao: 6, categoria: "basico" },
+    { numero: 671, nome: "Florges", geracao: 6, categoria: "basico" },
+    { numero: 672, nome: "Skiddo", geracao: 6, categoria: "basico" },
+    { numero: 673, nome: "Gogoat", geracao: 6, categoria: "basico" },
+    { numero: 674, nome: "Pancham", geracao: 6, categoria: "basico" },
+    { numero: 675, nome: "Pangoro", geracao: 6, categoria: "basico" },
+    { numero: 676, nome: "Furfrou", geracao: 6, categoria: "basico" },
+    { numero: 677, nome: "Espurr", geracao: 6, categoria: "basico" },
+    { numero: 678, nome: "Meowstic", geracao: 6, categoria: "basico" },
+    { numero: 679, nome: "Honedge", geracao: 6, categoria: "basico" },
+    { numero: 680, nome: "Doublade", geracao: 6, categoria: "basico" },
+    { numero: 681, nome: "Aegislash", geracao: 6, categoria: "basico" },
+    { numero: 682, nome: "Spritzee", geracao: 6, categoria: "basico" },
+    { numero: 683, nome: "Aromatisse", geracao: 6, categoria: "basico" },
+    { numero: 684, nome: "Swirlix", geracao: 6, categoria: "basico" },
+    { numero: 685, nome: "Slurpuff", geracao: 6, categoria: "basico" },
+    { numero: 686, nome: "Inkay", geracao: 6, categoria: "basico" },
+    { numero: 687, nome: "Malamar", geracao: 6, categoria: "basico" },
+    { numero: 688, nome: "Binacle", geracao: 6, categoria: "basico" },
+    { numero: 689, nome: "Barbaracle", geracao: 6, categoria: "basico" },
+    { numero: 690, nome: "Skrelp", geracao: 6, categoria: "basico" },
+    { numero: 691, nome: "Dragalge", geracao: 6, categoria: "basico" },
+    { numero: 692, nome: "Clauncher", geracao: 6, categoria: "basico" },
+    { numero: 693, nome: "Clawitzer", geracao: 6, categoria: "basico" },
+    { numero: 694, nome: "Helioptile", geracao: 6, categoria: "basico" },
+    { numero: 695, nome: "Heliolisk", geracao: 6, categoria: "basico" },
+    { numero: 696, nome: "Tyrunt", geracao: 6, categoria: "basico" },
+    { numero: 697, nome: "Tyrantrum", geracao: 6, categoria: "basico" },
+    { numero: 698, nome: "Amaura", geracao: 6, categoria: "basico" },
+    { numero: 699, nome: "Aurorus", geracao: 6, categoria: "basico" },
+    { numero: 700, nome: "Sylveon", geracao: 6, categoria: "basico" },
+    { numero: 701, nome: "Hawlucha", geracao: 6, categoria: "basico" },
+    { numero: 702, nome: "Dedenne", geracao: 6, categoria: "basico" },
+    { numero: 703, nome: "Carbink", geracao: 6, categoria: "basico" },
+    { numero: 704, nome: "Goomy", geracao: 6, categoria: "basico" },
+    { numero: 705, nome: "Sliggoo", geracao: 6, categoria: "basico" },
+    { numero: 706, nome: "Goodra", geracao: 6, categoria: "basico" },
+    { numero: 707, nome: "Klefki", geracao: 6, categoria: "basico" },
+    { numero: 708, nome: "Phantump", geracao: 6, categoria: "basico" },
+    { numero: 709, nome: "Trevenant", geracao: 6, categoria: "basico" },
+    { numero: 710, nome: "Pumpkaboo", geracao: 6, categoria: "basico" },
+    { numero: 711, nome: "Gourgeist", geracao: 6, categoria: "basico" },
+    { numero: 712, nome: "Bergmite", geracao: 6, categoria: "basico" },
+    { numero: 713, nome: "Avalugg", geracao: 6, categoria: "basico" },
+    { numero: 714, nome: "Noibat", geracao: 6, categoria: "basico" },
+    { numero: 715, nome: "Noivern", geracao: 6, categoria: "basico" },
+
+    // Geração 6 - LENDÁRIOS (Kalos + pós-jogo)
+    { numero: 716, nome: "Xerneas", geracao: 6, categoria: "lendario" },
+    { numero: 717, nome: "Yveltal", geracao: 6, categoria: "lendario" },
+    { numero: 718, nome: "Zygarde (50%)", geracao: 6, categoria: "lendario" },
+    { numero: 718, nome: "Zygarde (10%)", geracao: 6, categoria: "lendario" },
+    { numero: 719, nome: "Diancie", geracao: 6, categoria: "lendario" },
+    { numero: 720, nome: "Hoopa (Confinado)", geracao: 6, categoria: "lendario" },
+    { numero: 720, nome: "Hoopa (Desconfinado)", geracao: 6, categoria: "lendario" },
+    { numero: 721, nome: "Volcanion", geracao: 6, categoria: "lendario" },
+
+    // ---------- GERAÇÃO 7 (ALOLA) - BÁSICOS ----------
+    { numero: 722, nome: "Rowlet", geracao: 7, categoria: "basico" },
+    { numero: 723, nome: "Dartrix", geracao: 7, categoria: "basico" },
+    { numero: 724, nome: "Decidueye", geracao: 7, categoria: "basico" },
+    { numero: 725, nome: "Litten", geracao: 7, categoria: "basico" },
+    { numero: 726, nome: "Torracat", geracao: 7, categoria: "basico" },
+    { numero: 727, nome: "Incineroar", geracao: 7, categoria: "basico" },
+    { numero: 728, nome: "Popplio", geracao: 7, categoria: "basico" },
+    { numero: 729, nome: "Brionne", geracao: 7, categoria: "basico" },
+    { numero: 730, nome: "Primarina", geracao: 7, categoria: "basico" },
+    { numero: 731, nome: "Pikipek", geracao: 7, categoria: "basico" },
+    { numero: 732, nome: "Trumbeak", geracao: 7, categoria: "basico" },
+    { numero: 733, nome: "Toucannon", geracao: 7, categoria: "basico" },
+    { numero: 734, nome: "Yungoos", geracao: 7, categoria: "basico" },
+    { numero: 735, nome: "Gumshoos", geracao: 7, categoria: "basico" },
+    { numero: 736, nome: "Grubbin", geracao: 7, categoria: "basico" },
+    { numero: 737, nome: "Charjabug", geracao: 7, categoria: "basico" },
+    { numero: 738, nome: "Vikavolt", geracao: 7, categoria: "basico" },
+    { numero: 739, nome: "Crabrawler", geracao: 7, categoria: "basico" },
+    { numero: 740, nome: "Crabominable", geracao: 7, categoria: "basico" },
+    { numero: 741, nome: "Oricorio", geracao: 7, categoria: "basico" },
+    { numero: 742, nome: "Cutiefly", geracao: 7, categoria: "basico" },
+    { numero: 743, nome: "Ribombee", geracao: 7, categoria: "basico" },
+    { numero: 744, nome: "Rockruff", geracao: 7, categoria: "basico" },
+    { numero: 745, nome: "Lycanroc (Meio-dia)", geracao: 7, categoria: "basico" },
+    { numero: 745, nome: "Lycanroc (Crepúsculo)", geracao: 7, categoria: "basico" },
+    { numero: 745, nome: "Lycanroc (Noturno)", geracao: 7, categoria: "basico" },
+    { numero: 746, nome: "Wishiwashi", geracao: 7, categoria: "basico" },
+    { numero: 747, nome: "Mareanie", geracao: 7, categoria: "basico" },
+    { numero: 748, nome: "Toxapex", geracao: 7, categoria: "basico" },
+    { numero: 749, nome: "Mudbray", geracao: 7, categoria: "basico" },
+    { numero: 750, nome: "Mudsdale", geracao: 7, categoria: "basico" },
+    { numero: 751, nome: "Dewpider", geracao: 7, categoria: "basico" },
+    { numero: 752, nome: "Araquanid", geracao: 7, categoria: "basico" },
+    { numero: 753, nome: "Fomantis", geracao: 7, categoria: "basico" },
+    { numero: 754, nome: "Lurantis", geracao: 7, categoria: "basico" },
+    { numero: 755, nome: "Morelull", geracao: 7, categoria: "basico" },
+    { numero: 756, nome: "Shiinotic", geracao: 7, categoria: "basico" },
+    { numero: 757, nome: "Salandit", geracao: 7, categoria: "basico" },
+    { numero: 758, nome: "Salazzle", geracao: 7, categoria: "basico" },
+    { numero: 759, nome: "Stufful", geracao: 7, categoria: "basico" },
+    { numero: 760, nome: "Bewear", geracao: 7, categoria: "basico" },
+    { numero: 761, nome: "Bounsweet", geracao: 7, categoria: "basico" },
+    { numero: 762, nome: "Steenee", geracao: 7, categoria: "basico" },
+    { numero: 763, nome: "Tsareena", geracao: 7, categoria: "basico" },
+    { numero: 764, nome: "Comfey", geracao: 7, categoria: "basico" },
+    { numero: 765, nome: "Oranguru", geracao: 7, categoria: "basico" },
+    { numero: 766, nome: "Passimian", geracao: 7, categoria: "basico" },
+    { numero: 767, nome: "Wimpod", geracao: 7, categoria: "basico" },
+    { numero: 768, nome: "Golisopod", geracao: 7, categoria: "basico" },
+    { numero: 769, nome: "Sandygast", geracao: 7, categoria: "basico" },
+    { numero: 770, nome: "Palossand", geracao: 7, categoria: "basico" },
+    { numero: 771, nome: "Pyukumuku", geracao: 7, categoria: "basico" },
+    { numero: 772, nome: "Type: Null", geracao: 7, categoria: "basico" }, // pseudo-lendário
+    { numero: 773, nome: "Silvally", geracao: 7, categoria: "basico" },     // pseudo-lendário
+    { numero: 774, nome: "Minior", geracao: 7, categoria: "basico" },
+    { numero: 775, nome: "Komala", geracao: 7, categoria: "basico" },
+    { numero: 776, nome: "Turtonator", geracao: 7, categoria: "basico" },
+    { numero: 777, nome: "Togedemaru", geracao: 7, categoria: "basico" },
+    { numero: 778, nome: "Mimikyu", geracao: 7, categoria: "basico" },
+    { numero: 779, nome: "Bruxish", geracao: 7, categoria: "basico" },
+    { numero: 780, nome: "Drampa", geracao: 7, categoria: "basico" },
+    { numero: 781, nome: "Dhelmise", geracao: 7, categoria: "basico" },
+    { numero: 782, nome: "Jangmo-o", geracao: 7, categoria: "basico" },
+    { numero: 783, nome: "Hakamo-o", geracao: 7, categoria: "basico" },
+    { numero: 784, nome: "Kommo-o", geracao: 7, categoria: "basico" },
+
+    // Geração 7 - LENDÁRIOS e ULTRA-BEASTS
+    { numero: 785, nome: "Tapu Koko", geracao: 7, categoria: "lendario" },
+    { numero: 786, nome: "Tapu Lele", geracao: 7, categoria: "lendario" },
+    { numero: 787, nome: "Tapu Bulu", geracao: 7, categoria: "lendario" },
+    { numero: 788, nome: "Tapu Fini", geracao: 7, categoria: "lendario" },
+    { numero: 789, nome: "Cosmog", geracao: 7, categoria: "lendario" },
+    { numero: 790, nome: "Cosmoem", geracao: 7, categoria: "lendario" },
+    { numero: 791, nome: "Solgaleo", geracao: 7, categoria: "lendario" },
+    { numero: 792, nome: "Lunala", geracao: 7, categoria: "lendario" },
+    { numero: 793, nome: "Nihilego", geracao: 7, categoria: "lendario" },
+    { numero: 794, nome: "Buzzwole", geracao: 7, categoria: "lendario" },
+    { numero: 795, nome: "Pheromosa", geracao: 7, categoria: "lendario" },
+    { numero: 796, nome: "Xurkitree", geracao: 7, categoria: "lendario" },
+    { numero: 797, nome: "Celesteela", geracao: 7, categoria: "lendario" },
+    { numero: 798, nome: "Kartana", geracao: 7, categoria: "lendario" },
+    { numero: 799, nome: "Guzzlord", geracao: 7, categoria: "lendario" },
+    { numero: 800, nome: "Necrozma", geracao: 7, categoria: "lendario" },
+    { numero: 801, nome: "Magearna", geracao: 7, categoria: "lendario" },
+    { numero: 802, nome: "Marshadow", geracao: 7, categoria: "lendario" },
+    { numero: 803, nome: "Poipole", geracao: 7, categoria: "lendario" },
+    { numero: 804, nome: "Naganadel", geracao: 7, categoria: "lendario" },
+    { numero: 805, nome: "Stakataka", geracao: 7, categoria: "lendario" },
+    { numero: 806, nome: "Blacephalon", geracao: 7, categoria: "lendario" },
+    { numero: 807, nome: "Zeraora", geracao: 7, categoria: "lendario" },
+
+    // ---------- GERAÇÃO 8 (GALAR/HISUI) - BÁSICOS ----------
+    { numero: 810, nome: "Grookey", geracao: 8, categoria: "basico" },
+    { numero: 811, nome: "Thwackey", geracao: 8, categoria: "basico" },
+    { numero: 812, nome: "Rillaboom", geracao: 8, categoria: "basico" },
+    { numero: 813, nome: "Scorbunny", geracao: 8, categoria: "basico" },
+    { numero: 814, nome: "Raboot", geracao: 8, categoria: "basico" },
+    { numero: 815, nome: "Cinderace", geracao: 8, categoria: "basico" },
+    { numero: 816, nome: "Sobble", geracao: 8, categoria: "basico" },
+    { numero: 817, nome: "Drizzile", geracao: 8, categoria: "basico" },
+    { numero: 818, nome: "Inteleon", geracao: 8, categoria: "basico" },
+    { numero: 819, nome: "Skwovet", geracao: 8, categoria: "basico" },
+    { numero: 820, nome: "Greedent", geracao: 8, categoria: "basico" },
+    { numero: 821, nome: "Rookidee", geracao: 8, categoria: "basico" },
+    { numero: 822, nome: "Corvisquire", geracao: 8, categoria: "basico" },
+    { numero: 823, nome: "Corviknight", geracao: 8, categoria: "basico" },
+    { numero: 824, nome: "Blipbug", geracao: 8, categoria: "basico" },
+    { numero: 825, nome: "Dottler", geracao: 8, categoria: "basico" },
+    { numero: 826, nome: "Orbeetle", geracao: 8, categoria: "basico" },
+    { numero: 827, nome: "Nickit", geracao: 8, categoria: "basico" },
+    { numero: 828, nome: "Thievul", geracao: 8, categoria: "basico" },
+    { numero: 829, nome: "Gossifleur", geracao: 8, categoria: "basico" },
+    { numero: 830, nome: "Eldegoss", geracao: 8, categoria: "basico" },
+    { numero: 831, nome: "Wooloo", geracao: 8, categoria: "basico" },
+    { numero: 832, nome: "Dubwool", geracao: 8, categoria: "basico" },
+    { numero: 833, nome: "Chewtle", geracao: 8, categoria: "basico" },
+    { numero: 834, nome: "Drednaw", geracao: 8, categoria: "basico" },
+    { numero: 835, nome: "Yamper", geracao: 8, categoria: "basico" },
+    { numero: 836, nome: "Boltund", geracao: 8, categoria: "basico" },
+    { numero: 837, nome: "Rolycoly", geracao: 8, categoria: "basico" },
+    { numero: 838, nome: "Carkol", geracao: 8, categoria: "basico" },
+    { numero: 839, nome: "Coalossal", geracao: 8, categoria: "basico" },
+    { numero: 840, nome: "Applin", geracao: 8, categoria: "basico" },
+    { numero: 841, nome: "Flapple", geracao: 8, categoria: "basico" },
+    { numero: 842, nome: "Appletun", geracao: 8, categoria: "basico" },
+    { numero: 843, nome: "Silicobra", geracao: 8, categoria: "basico" },
+    { numero: 844, nome: "Sandaconda", geracao: 8, categoria: "basico" },
+    { numero: 845, nome: "Cramorant", geracao: 8, categoria: "basico" },
+    { numero: 846, nome: "Arrokuda", geracao: 8, categoria: "basico" },
+    { numero: 847, nome: "Barraskewda", geracao: 8, categoria: "basico" },
+    { numero: 848, nome: "Toxel", geracao: 8, categoria: "basico" },
+    { numero: 849, nome: "Toxtricity", geracao: 8, categoria: "basico" },
+    { numero: 850, nome: "Sizzlipede", geracao: 8, categoria: "basico" },
+    { numero: 851, nome: "Centiskorch", geracao: 8, categoria: "basico" },
+    { numero: 852, nome: "Clobbopus", geracao: 8, categoria: "basico" },
+    { numero: 853, nome: "Grapploct", geracao: 8, categoria: "basico" },
+    { numero: 854, nome: "Sinistea", geracao: 8, categoria: "basico" },
+    { numero: 855, nome: "Polteageist", geracao: 8, categoria: "basico" },
+    { numero: 856, nome: "Hatenna", geracao: 8, categoria: "basico" },
+    { numero: 857, nome: "Hattrem", geracao: 8, categoria: "basico" },
+    { numero: 858, nome: "Hatterene", geracao: 8, categoria: "basico" },
+    { numero: 859, nome: "Impidimp", geracao: 8, categoria: "basico" },
+    { numero: 860, nome: "Morgrem", geracao: 8, categoria: "basico" },
+    { numero: 861, nome: "Grimmsnarl", geracao: 8, categoria: "basico" },
+    { numero: 862, nome: "Obstagoon", geracao: 8, categoria: "basico" },
+    { numero: 863, nome: "Perrserker", geracao: 8, categoria: "basico" },
+    { numero: 864, nome: "Cursola", geracao: 8, categoria: "basico" },
+    { numero: 865, nome: "Sirfetch'd", geracao: 8, categoria: "basico" },
+    { numero: 866, nome: "Mr. Rime", geracao: 8, categoria: "basico" },
+    { numero: 867, nome: "Runerigus", geracao: 8, categoria: "basico" },
+    { numero: 868, nome: "Milcery", geracao: 8, categoria: "basico" },
+    { numero: 869, nome: "Alcremie", geracao: 8, categoria: "basico" },
+    { numero: 870, nome: "Falinks", geracao: 8, categoria: "basico" },
+    { numero: 871, nome: "Pincurchin", geracao: 8, categoria: "basico" },
+    { numero: 872, nome: "Snom", geracao: 8, categoria: "basico" },
+    { numero: 873, nome: "Frosmoth", geracao: 8, categoria: "basico" },
+    { numero: 874, nome: "Stonjourner", geracao: 8, categoria: "basico" },
+    { numero: 875, nome: "Eiscue", geracao: 8, categoria: "basico" },
+    { numero: 876, nome: "Indeedee", geracao: 8, categoria: "basico" },
+    { numero: 877, nome: "Morpeko", geracao: 8, categoria: "basico" },
+    { numero: 878, nome: "Cufant", geracao: 8, categoria: "basico" },
+    { numero: 879, nome: "Copperajah", geracao: 8, categoria: "basico" },
+    { numero: 880, nome: "Dracozolt", geracao: 8, categoria: "basico" },
+    { numero: 881, nome: "Arctozolt", geracao: 8, categoria: "basico" },
+    { numero: 882, nome: "Dracovish", geracao: 8, categoria: "basico" },
+    { numero: 883, nome: "Arctovish", geracao: 8, categoria: "basico" },
+    { numero: 884, nome: "Duraludon", geracao: 8, categoria: "basico" },
+    { numero: 885, nome: "Dreepy", geracao: 8, categoria: "basico" },
+    { numero: 886, nome: "Drakloak", geracao: 8, categoria: "basico" },
+    { numero: 887, nome: "Dragapult", geracao: 8, categoria: "basico" },
+
+    // Geração 8 - LENDÁRIOS (Galar, Ilha da Armadura, Tundra Nevada, Hisui)
+    { numero: 888, nome: "Zacian", geracao: 8, categoria: "lendario" },
+    { numero: 889, nome: "Zamazenta", geracao: 8, categoria: "lendario" },
+    { numero: 890, nome: "Eternatus", geracao: 8, categoria: "lendario" },
+    { numero: 891, nome: "Kubfu", geracao: 8, categoria: "lendario" },
+    { numero: 892, nome: "Urshifu (Forma Golpe)", geracao: 8, categoria: "lendario" },
+    { numero: 892, nome: "Urshifu (Forma Fluxo)", geracao: 8, categoria: "lendario" },
+    { numero: 893, nome: "Zarude", geracao: 8, categoria: "lendario" },
+    { numero: 894, nome: "Regieleki", geracao: 8, categoria: "lendario" },
+    { numero: 895, nome: "Regidrago", geracao: 8, categoria: "lendario" },
+    { numero: 896, nome: "Glastrier", geracao: 8, categoria: "lendario" },
+    { numero: 897, nome: "Spectrier", geracao: 8, categoria: "lendario" },
+    { numero: 898, nome: "Calyrex", geracao: 8, categoria: "lendario" },
+    { numero: 899, nome: "Articuno de Galar", geracao: 8, categoria: "lendario" },
+    { numero: 900, nome: "Zapdos de Galar", geracao: 8, categoria: "lendario" },
+    { numero: 901, nome: "Moltres de Galar", geracao: 8, categoria: "lendario" },
+    { numero: 902, nome: "Enamorus", geracao: 8, categoria: "lendario" }
+  ];
+
+  // ========== DOM ELEMENTOS ==========
+  const primaryEl = document.getElementById("primary");
+  const secondaryEl = document.getElementById("secondary");
+  const tertiaryEl = document.getElementById("tertiary");
+  const scaleEl = document.getElementById("scale");
+  const pseudoEl = document.getElementById("pseudo");
+  const perfectEl = document.getElementById("perfect");
+  const anomalousEl = document.getElementById("anomalous");
+  const warningBox = document.getElementById("warningBox");
+  const successBox = document.getElementById("successBox");
+  const ivResult = document.getElementById("ivResult");
+  const pokemonArea = document.getElementById("pokemonArea");
+
+  function rollD6() { return Math.floor(Math.random() * 6) + 1; }
+  function showWarning(msg){ warningBox.style.display = "block"; warningBox.textContent = msg; }
+  function hideWarning(){ warningBox.style.display = "none"; warningBox.textContent = ""; }
+  function showSuccess(msg){ successBox.style.display = "block"; successBox.textContent = msg; }
+  function hideSuccess(){ successBox.style.display = "none"; successBox.textContent = ""; }
+
+  function updateScaleRules(){
+    const isLegendary = scaleEl.value === "lendario";
+    if(isLegendary){
+      pseudoEl.checked = false;
+      pseudoEl.disabled = true;
+      perfectEl.disabled = false;
+      showWarning("Pseudo-lendário não pode ser marcado em Pokémon Lendário.");
+    } else {
+      pseudoEl.disabled = false;
+      perfectEl.checked = false;
+      perfectEl.disabled = true;
+      hideWarning();
+    }
+  }
+
+  function resolvePriorityOrder(){
+    const chosen = [primaryEl.value, secondaryEl.value, tertiaryEl.value];
+    const unique = [];
+    chosen.forEach(v => { if(v && !unique.includes(v)) unique.push(v); });
+    const missing = ATTRS.filter(attr => !unique.includes(attr));
+    const completed = [...unique, ...missing];
+    if(!primaryEl.value && !secondaryEl.value && !tertiaryEl.value){
+      const shuffled = [...ATTRS];
+      for(let i = shuffled.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+    return completed.slice(0, 3);
+  }
+
+  // Geração de IVs (corrigida e com anômalo funcional)
+  function generateIVsWithDice() {
+    const isLegendary = scaleEl.value === "lendario";
+    const isPseudo = !isLegendary && pseudoEl.checked;
+    const isPerfect = isLegendary && perfectEl.checked;
+    const isAnomalous = anomalousEl.checked;
+    const priorityOrder = resolvePriorityOrder();
+    let rawValues = [];
+    if (isPerfect) {
+      rawValues = [6, 6, 6];
+    } else {
+      for (let i = 0; i < 3; i++) rawValues.push(rollD6());
+      for (let i = 0; i < rawValues.length; i++) {
+        let maxLimit = 5;
+        if (isLegendary) maxLimit = 6;
+        if (isPseudo && !isLegendary) maxLimit = 6;
+        if (rawValues[i] > maxLimit) rawValues[i] = maxLimit;
+        if (rawValues[i] < 1) rawValues[i] = 1;
+      }
+      if (isPseudo && !isLegendary) {
+        const sixCount = rawValues.filter(v => v === 6).length;
+        if (sixCount > 1) {
+          let sixFixed = false;
+          for (let i = 0; i < rawValues.length; i++) {
+            if (rawValues[i] === 6 && sixFixed) rawValues[i] = 5;
+            else if (rawValues[i] === 6) sixFixed = true;
+          }
+        } else if (sixCount === 0) {
+          const maxIndex = rawValues.indexOf(Math.max(...rawValues));
+          rawValues[maxIndex] = 6;
+        }
+      }
+    }
+    if (isAnomalous) {
+      let candidatesUp = [0,1,2];
+      let candidatesDown = [];
+      for (let i = 0; i < rawValues.length; i++) if (rawValues[i] > 1) candidatesDown.push(i);
+      if (candidatesDown.length > 0) {
+        let upIndex = candidatesUp[Math.floor(Math.random() * candidatesUp.length)];
+        let downPool = candidatesDown.filter(i => i !== upIndex);
+        if (downPool.length === 0) downPool = candidatesDown;
+        let downIndex = downPool[Math.floor(Math.random() * downPool.length)];
+        rawValues[upIndex]++;
+        rawValues[downIndex]--;
+      }
+    }
+    const sortedValues = [...rawValues].sort((a,b)=>b-a);
+    const stats = {
+      [priorityOrder[0]]: sortedValues[0],
+      [priorityOrder[1]]: sortedValues[1],
+      [priorityOrder[2]]: sortedValues[2]
+    };
+    const total = stats.Poder + stats.Habilidade + stats.Resistência;
+    const scaleLabel = isLegendary ? "Lendário" : (isPseudo ? "Básico com Pseudo-Lendário" : "Básico");
+    ivResult.innerHTML = `
+      <div class="cards">
+        ${ATTRS.map(attr => `<div class="stat-card"><h3>${attr}</h3><div class="value">${stats[attr]}</div><div class="rank">${RANKS[stats[attr]] || "Especial"}</div></div>`).join("")}
+      </div>
+      <div class="meta">
+        <div><strong>Valores finais:</strong> ${rawValues.join(", ")}</div>
+        <div style="margin-top:8px;">
+          <span class="pill">Escala: ${scaleLabel}</span>
+          <span class="pill">Total: ${total}</span>
+          <span class="pill">Prioridade: ${priorityOrder.join(" → ")}</span>
+          ${isAnomalous ? `<span class="pill" style="background:#a92d2d; color:#fff;">Anômalo ativo</span>` : ""}
+          ${isPerfect ? `<span class="pill">Perfeito</span>` : ""}
+        </div>
+        <div class="note">${isAnomalous ? "Efeito anômalo: +1 em um atributo, -1 em outro." : "Valores dentro dos limites."}</div>
+      </div>
+    `;
+    showSuccess("IVs rolados com sucesso!");
+  }
+
+  // Filtro de Pokémon (com suporte a todas as categorias)
+  function pickPokemonByGenerationAndCategory(genValue, categoryFilter) {
+    let pool = POKEDEX;
+    if (genValue) pool = pool.filter(p => String(p.geracao) === String(genValue));
+    if (categoryFilter === "auto") {
+      if (pool.length === 0) return null;
+      return pool[Math.floor(Math.random() * pool.length)];
+    } else {
+      const filtered = pool.filter(p => p.categoria === categoryFilter);
+      if (filtered.length === 0) return null;
+      return filtered[Math.floor(Math.random() * filtered.length)];
+    }
+  }
+
+  function computeMaxVigor(players, mod){ return Math.max(1, (players * 3) + mod); }
+
+  function buildPokemonCard(data, index){
+    const shinyLabel = data.isShiny ? "Radiante (Shiny)" : null;
+    const scaleLabel = data.scale === "lendario" ? "Lendário" : "Básico";
+    return `
+      <div class="poke-card" data-card-id="${index}" data-current-vigor="${data.maxVigor}" data-max-vigor="${data.maxVigor}">
+        <div class="poke-head">
+          <div class="poke-name">${data.nome}</div>
+          <div>
+            <span class="tag">${scaleLabel}</span>
+            <span class="tag">Geração ${data.geracao}</span>
+            ${shinyLabel ? `<span class="tag" style="background:rgba(255,215,0,0.2); border-color:#ffd700; color:#ffd700;">✨ ${shinyLabel} ✨</span>` : ""}
+          </div>
+        </div>
+        <div class="manual-grid">
+          <div class="subpanel"><strong>Poder</strong><input type="number" min="1" max="99" placeholder="Definir manualmente"></div>
+          <div class="subpanel"><strong>Habilidade</strong><input type="number" min="1" max="99" placeholder="Definir manualmente"></div>
+          <div class="subpanel"><strong>Resistência</strong><input type="number" min="1" max="99" placeholder="Definir manualmente"></div>
+        </div>
+        <div class="subpanel">
+          <strong>Vigor secundário</strong>
+          <div>Jogadores: <strong>${data.players}</strong></div>
+          <div>Vigor máximo: <strong class="vigorLabel">${data.maxVigor}</strong></div>
+          <div>Vigor atual: <strong class="vigorCurrent">${data.maxVigor}</strong></div>
+          <div class="vigor-bar-wrap"><div class="vigor-bar" style="width:100%"></div></div>
+          <div class="impact-row">
+            <button type="button" class="impact-btn" onclick="applyDamage(${index},1)">-1</button>
+            <button type="button" class="impact-btn" onclick="applyDamage(${index},2)">-2</button>
+            <button type="button" class="impact-btn" onclick="applyDamage(${index},3)">-3</button>
+            <button type="button" class="impact-btn" onclick="healVigor(${index},1)">+1</button>
+            <button type="button" class="impact-btn" onclick="resetVigor(${index})">Reset</button>
+          </div>
+          <div class="mini">Vigor base = ${data.players} × 3 + modificador.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="field"><label>Anotação</label><textarea placeholder="Anotações do mestre..."></textarea></div>
+      </div>
+    `;
+  }
+
+  function generatePokemons(){
+    const amount = Math.max(1, Math.min(12, Number(document.getElementById("pokeAmount").value) || 1));
+    const generation = document.getElementById("generationFilter").value;
+    const categoryFilter = document.getElementById("pokemonCategoryFilter").value;
+    const isShiny = document.getElementById("isShiny").checked;
+    const players = Math.max(1, Number(document.getElementById("playersCount").value) || 1);
+    const mod = Number(document.getElementById("vigorMod").value) || 0;
+    const maxVigor = computeMaxVigor(players, mod);
+
+    const cards = [];
+    let errorOccurred = false;
+
+    for(let i = 0; i < amount; i++){
+      let poke;
+      let effectiveScale;
+
+      if (categoryFilter === "auto") {
+        poke = pickPokemonByGenerationAndCategory(generation, "auto");
+        if (!poke) { errorOccurred = true; break; }
+        effectiveScale = poke.categoria;
+      } else {
+        poke = pickPokemonByGenerationAndCategory(generation, categoryFilter);
+        if (!poke) { errorOccurred = true; break; }
+        effectiveScale = categoryFilter;
+      }
+
+      cards.push(buildPokemonCard({
+        nome: poke.nome,
+        geracao: poke.geracao,
+        scale: effectiveScale,
+        isShiny: isShiny,
+        players: players,
+        maxVigor: maxVigor
+      }, i));
+    }
+
+    if (errorOccurred) {
+      const genName = generation ? `${generation}ª geração` : "geração selecionada";
+      const categoryName = categoryFilter === "basico" ? "básicos" : (categoryFilter === "lendario" ? "lendários" : "automáticos");
+      pokemonArea.innerHTML = `<div class="empty">⚠️ Nenhum Pokémon ${categoryName} encontrado na ${genName}. Tente outra geração.</div>`;
+      showWarning(`Sem Pokémon ${categoryName} na ${genName}.`);
+    } else {
+      pokemonArea.innerHTML = cards.join("");
+      hideWarning();
+      showSuccess(`${cards.length} Pokémon gerado(s)!`);
+    }
+  }
+
+  // Funções de dano/vigor
+  function getCard(cardId){ return document.querySelector(`[data-card-id="${cardId}"]`); }
+  window.applyDamage = function(cardId, amount){
+    const card = getCard(cardId);
+    if(!card) return;
+    const max = Number(card.dataset.maxVigor);
+    let current = Number(card.dataset.currentVigor);
+    current = Math.max(0, current - amount);
+    card.dataset.currentVigor = current;
+    updateVigorUI(card, current, max);
+  }
+  window.healVigor = function(cardId, amount){
+    const card = getCard(cardId);
+    if(!card) return;
+    const max = Number(card.dataset.maxVigor);
+    let current = Number(card.dataset.currentVigor);
+    current = Math.min(max, current + amount);
+    card.dataset.currentVigor = current;
+    updateVigorUI(card, current, max);
+  }
+  window.resetVigor = function(cardId){
+    const card = getCard(cardId);
+    if(!card) return;
+    const max = Number(card.dataset.maxVigor);
+    card.dataset.currentVigor = max;
+    updateVigorUI(card, max, max);
+  }
+  function updateVigorUI(card, current, max){
+    const currentEl = card.querySelector(".vigorCurrent");
+    const bar = card.querySelector(".vigor-bar");
+    const pct = Math.max(0, Math.min(100, (current / max) * 100));
+    currentEl.textContent = current;
+    bar.style.width = pct + "%";
+    if(pct > 60) bar.style.background = "linear-gradient(90deg, #a33333, #d45e5e)";
+    else if(pct > 30) bar.style.background = "linear-gradient(90deg, #a66a22, #d7a049)";
+    else bar.style.background = "linear-gradient(90deg, #7a1d1d, #d12d2d)";
+  }
+
+  // Event listeners
+  document.getElementById("generateIvBtn").addEventListener("click", generateIVsWithDice);
+  document.getElementById("generatePokemonBtn").addEventListener("click", generatePokemons);
+  document.getElementById("clearPokemonBtn").addEventListener("click", () => {
+    pokemonArea.innerHTML = `<div class="empty">Nenhum Pokémon gerado ainda.</div>`;
+    hideWarning();
+  });
+  scaleEl.addEventListener("change", updateScaleRules);
+  updateScaleRules();
+</script>
+</body>
+</html>

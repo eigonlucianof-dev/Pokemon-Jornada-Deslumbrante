@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de IVs — Pokémon Jornada Deslumbrante</title>
+  <style>
+    :root{
+      --bg:#000000;
+      --panel:#0a0a0a;
+      --panel-2:#101010;
+      --line:#1f8f48;
+      --line-soft:#145d31;
+      --text:#f3f3f3;
+      --muted:#a8b3ab;
+      --accent:#34c36b;
+      --accent-soft:#183d26;
+      --danger:#7d1f1f;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+      padding:24px;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .hero{
+      text-align:center;
+      margin-bottom:24px;
+      padding:24px 18px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(52,195,107,0.08), rgba(0,0,0,0.25));
+    }
+
+    h1{
+      margin:0;
+      font-size:2rem;
+      color:var(--accent);
+      letter-spacing:0.4px;
+    }
+
+    .subtitle{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:0.98rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr 0.9fr;
+      gap:18px;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 0 0 1px rgba(52,195,107,0.04) inset;
+    }
+
+    .panel h2{
+      margin:0 0 14px 0;
+      font-size:1.1rem;
+      color:var(--accent);
+    }
+
+    .field{
+      margin-bottom:14px;
+    }
+
+    .field label{
+      display:block;
+      margin-bottom:7px;
+      font-weight:bold;
+      color:#d8f0df;
+    }
+
+    .field small{
+      display:block;
+      color:var(--muted);
+      margin-top:6px;
+      line-height:1.45;
+    }
+
+    select, button, input[type="checkbox"]{
+      font:inherit;
+    }
+
+    select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line-soft);
+      background:var(--panel-2);
+      color:var(--text);
+      outline:none;
+    }
+
+    .triple{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:10px;
+    }
+
+    .scale-row{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+
+    .check{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      background:rgba(52,195,107,0.06);
+      border:1px solid var(--line-soft);
+      padding:12px;
+      border-radius:12px;
+      line-height:1.45;
+    }
+
+    .check input{
+      margin-top:4px;
+      transform:scale(1.15);
+      accent-color:var(--accent);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
+    button{
+      cursor:pointer;
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:bold;
+      transition:transform .12s ease, opacity .12s ease, background .12s ease;
+    }
+
+    button:hover{
+      transform:translateY(-1px);
+    }
+
+    .primary{
+      background:var(--accent);
+      color:#05110a;
+    }
+
+    .secondary{
+      background:#121212;
+      color:#dfe9e2;
+      border:1px solid var(--line-soft);
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .stat-card{
+      background:linear-gradient(180deg, rgba(52,195,107,0.07), rgba(255,255,255,0.02));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      text-align:center;
+      min-height:132px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .stat-card h3{
+      margin:0 0 8px 0;
+      color:#dff7e6;
+      font-size:1rem;
+    }
+
+    .value{
+      font-size:2.1rem;
+      font-weight:bold;
+      color:var(--accent);
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    .rank{
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+
+    .meta{
+      margin-top:14px;
+      padding:14px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--line-soft);
+      line-height:1.5;
+    }
+
+    .meta strong{
+      color:#dff7e6;
+    }
+
+    .rolls{
+      margin-top:10px;
+      color:var(--muted);
+    }
+
+    .history-box{
+      margin-top:16px;
+      padding:14px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--line-soft);
+    }
+
+    .history-item{
+      margin-top:10px;
+      padding:12px;
+      background:#0d0d0d;
+      border:1px solid #1a5a31;
+      border-radius:12px;
+      line-height:1.5;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:4px 9px;
+      border-radius:999px;
+      border:1px solid var(--line-soft);
+      background:rgba(52,195,107,0.08);
+      color:#cdeed7;
+      font-size:0.88rem;
+      margin-right:6px;
+      margin-bottom:6px;
+    }
+
+    .note{
+      color:var(--muted);
+      font-size:0.94rem;
+      margin-top:12px;
+      line-height:1.5;
+    }
+
+    .warning{
+      color:#ffd7d7;
+      background:rgba(125,31,31,0.25);
+      border:1px solid #6e2727;
+      border-radius:12px;
+      padding:10px 12px;
+      margin-top:10px;
+      display:none;
+    }
+
+    .empty{
+      color:var(--muted);
+      text-align:center;
+      padding:22px 12px;
+      border:1px dashed var(--line-soft);
+      border-radius:14px;
+      margin-top:12px;
+    }
+
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 720px){
+      .triple, .cards{grid-template-columns:1fr}
+      body{padding:16px}
+      h1{font-size:1.7rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Gerador de IVs</h1>
+      <div class="subtitle">Pokémon Jornada Deslumbrante.</div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Configuração da geração</h2>
+
+        <div class="field">
+          <label>Atributo Prioridade</label>
+          <div class="triple">
+            <div>
+              <select id="primary">
+                <option value="">Principal automático</option>
+                <option value="Poder">Poder</option>
+                <option value="Habilidade">Habilidade</option>
+                <option value="Resistência">Resistência</option>
+              </select>
+            </div>
+            <div>
+              <select id="secondary">
+                <option value="">Secundário automático</option>
+                <option value="Poder">Poder</option>
+                <option value="Habilidade">Habilidade</option>
+                <option value="Resistência">Resistência</option>
+              </select>
+            </div>
+            <div>
+              <select id="tertiary">
+                <option value="">Terciário automático</option>
+                <option value="Poder">Poder</option>
+                <option value="Habilidade">Habilidade</option>
+                <option value="Resistência">Resistência</option>
+              </select>
+            </div>
+          </div>
+          <small>
+            O maior valor gerado vai para o atributo principal, o segundo maior para o secundário e o menor para o terciário.
+            Se algo ficar em branco, a ordem é completada automaticamente.
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Escala do Pokémon</label>
+          <div class="scale-row">
+            <select id="scale">
+              <option value="basico">Básico</option>
+              <option value="lendario">Radiante ou Lendário</option>
+            </select>
+          </div>
+          <small>
+            Básico: valores de 1 a 5, com exceção opcional de um único atributo chegando a 6 no caso de pseudo-lendário.<br>
+            Radiante ou Lendário: valores de 1 a 6 em todos os atributos.
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Opção extra</label>
+          <div class="check">
+            <input type="checkbox" id="pseudo" />
+            <div>
+              <strong>Forçar status para Pseudo-Lendário?</strong><br>
+              Permite um total máximo de 16, com apenas um atributo podendo chegar a 6.
+            </div>
+          </div>
+          <div class="warning" id="warningBox"></div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="generateBtn">Gerar IVs</button>
+          <button class="secondary" id="clearHistoryBtn">Apagar histórico salvo</button>
+        </div>
+
+        <div class="note">
+          O histórico guarda a última geração válida. Se você gerar exatamente os mesmos valores novamente, ele não duplica nem altera a recomendação. Quando sair uma geração diferente, o histórico antigo é substituído.
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Resultado</h2>
+        <div id="resultArea">
+          <div class="empty">Nenhum IV gerado ainda.</div>
+        </div>
+
+        <div class="history-box">
+          <strong>Histórico salvo</strong>
+          <div id="historyArea" class="note">Nenhuma geração registrada.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const ATTRS = ["Poder", "Habilidade", "Resistência"];
+    const RANKS = {
+      1: "Fraco",
+      2: "Comum",
+      3: "Bom",
+      4: "Forte",
+      5: "Especialista",
+      6: "Mestre"
+    };
+
+    const primaryEl = document.getElementById("primary");
+    const secondaryEl = document.getElementById("secondary");
+    const tertiaryEl = document.getElementById("tertiary");
+    const scaleEl = document.getElementById("scale");
+    const pseudoEl = document.getElementById("pseudo");
+    const warningBox = document.getElementById("warningBox");
+    const resultArea = document.getElementById("resultArea");
+    const historyArea = document.getElementById("historyArea");
+
+    function randDie() {
+      return Math.floor(Math.random() * 6) + 1;
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function resolvePriority() {
+      const chosen = [primaryEl.value, secondaryEl.value, tertiaryEl.value];
+      const unique = [];
+      chosen.forEach(v => {
+        if (v && !unique.includes(v)) unique.push(v);
+      });
+
+      const missing = ATTRS.filter(a => !unique.includes(a));
+      const completed = [...unique, ...missing];
+
+      if (!primaryEl.value && completed.length) {
+        if (!unique.length) {
+          return shuffle(ATTRS);
+        }
+      }
+
+      return completed.slice(0, 3);
+    }
+
+    function updatePseudoState() {
+      const isLegendary = scaleEl.value === "lendario";
+      pseudoEl.disabled = isLegendary;
+
+      if (isLegendary) {
+        pseudoEl.checked = false;
+        warningBox.style.display = "block";
+        warningBox.textContent = "A opção de pseudo-lendário fica desativada para Pokémon Radiante ou Lendário.";
+      } else {
+        warningBox.style.display = "none";
+        warningBox.textContent = "";
+      }
+    }
+
+    function generateRolls(priorityOrder, isLegendary, isPseudo) {
+      const raw = [randDie(), randDie(), randDie()].sort((a, b) => b - a);
+      const adjusted = [...raw];
+
+      if (isLegendary) {
+        return { raw, adjusted };
+      }
+
+      if (isPseudo) {
+        adjusted[0] = raw[0];
+        adjusted[1] = Math.min(raw[1], 5);
+        adjusted[2] = Math.min(raw[2], 5);
+        return { raw, adjusted };
+      }
+
+      adjusted[0] = Math.min(raw[0], 5);
+      adjusted[1] = Math.min(raw[1], 5);
+      adjusted[2] = Math.min(raw[2], 5);
+      return { raw, adjusted };
+    }
+
+    function assignStats(adjusted, priorityOrder) {
+      const stats = {};
+      stats[priorityOrder[0]] = adjusted[0];
+      stats[priorityOrder[1]] = adjusted[1];
+      stats[priorityOrder[2]] = adjusted[2];
+      return stats;
+    }
+
+    function highestAttr(stats) {
+      return Object.entries(stats).sort((a, b) => b[1] - a[1])[0][0];
+    }
+
+    function recommendation(stats) {
+      const power = stats["Poder"];
+      const skill = stats["Habilidade"];
+      const resist = stats["Resistência"];
+      const values = [power, skill, resist];
+      const highCount = values.filter(v => v >= 5).length;
+
+      if (highCount >= 2) {
+        return "Recomenda-se forçar o oponente a fazer uso de um atributo de escala inferior ao seu.";
+      }
+
+      if (resist >= 5) {
+        return "Recomendado adicionar movimentos que diminuam a resistência do adversário.";
+      }
+
+      if (power <= skill - 2 && power <= resist - 2) {
+        return "Recomendado adicionar movimentos que aumentem Precisão ou Ataque para ter aumento de poder durante o combate.";
+      }
+
+      if (skill <= power - 2 && skill <= resist - 2) {
+        return "Recomendado enfrentar os adversários a curto alcance para evitar o uso de habilidade.";
+      }
+
+      if (resist <= power - 2 && resist <= skill - 2) {
+        const top = highestAttr(stats);
+        if (top === "Poder") {
+          return "Recomendado responder defensivamente com Contra-ataque.";
+        }
+        return "Recomendado responder defensivamente com Esquiva.";
+      }
+
+      return "Recomendado explorar o atributo mais alto do Pokémon para manter vantagem durante o combate.";
+    }
+
+    function totalMaxLabel(isLegendary, isPseudo) {
+      if (isLegendary) return "18";
+      if (isPseudo) return "16";
+      return "15";
+    }
+
+    function buildResultHTML(payload) {
+      const { stats, raw, adjusted, priorityOrder, isLegendary, isPseudo, rec } = payload;
+      const total = stats["Poder"] + stats["Habilidade"] + stats["Resistência"];
+      const scaleName = isLegendary ? "Radiante ou Lendário" : (isPseudo ? "Básico com Pseudo-Lendário" : "Básico");
+
+      return `
+        <div class="cards">
+          ${ATTRS.map(attr => `
+            <div class="stat-card">
+              <h3>${attr}</h3>
+              <div class="value">${stats[attr]}</div>
+              <div class="rank">${RANKS[stats[attr]]}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="meta">
+          <div><strong>Valor de Atributo</strong></div>
+          <div style="margin-top:8px;">
+            <span class="pill">Escala: ${scaleName}</span>
+            <span class="pill">Total obtido: ${total}</span>
+            <span class="pill">Total máximo: ${totalMaxLabel(isLegendary, isPseudo)}</span>
+          </div>
+
+          <div class="rolls">
+            Rolagem base: ${raw.join(" • ")}<br>
+            Valores aplicados: ${adjusted.join(" • ")}<br>
+            Ordem de prioridade: ${priorityOrder.join(" → ")}
+          </div>
+
+          <div style="margin-top:12px;"><strong>Recomendação:</strong> ${rec}</div>
+        </div>
+      `;
+    }
+
+    function saveHistory(entry) {
+      const current = JSON.parse(localStorage.getItem("ivs_history_single") || "null");
+
+      if (current && JSON.stringify(current.stats) === JSON.stringify(entry.stats)) {
+        return;
+      }
+
+      localStorage.setItem("ivs_history_single", JSON.stringify(entry));
+    }
+
+    function renderHistory() {
+      const current = JSON.parse(localStorage.getItem("ivs_history_single") || "null");
+
+      if (!current) {
+        historyArea.innerHTML = "Nenhuma geração registrada.";
+        return;
+      }
+
+      const total = current.stats["Poder"] + current.stats["Habilidade"] + current.stats["Resistência"];
+
+      historyArea.innerHTML = `
+        <div class="history-item">
+          <div>
+            <span class="pill">${current.scaleLabel}</span>
+            <span class="pill">Total: ${total}</span>
+          </div>
+          <div><strong>Poder:</strong> ${current.stats["Poder"]} — ${RANKS[current.stats["Poder"]]}</div>
+          <div><strong>Habilidade:</strong> ${current.stats["Habilidade"]} — ${RANKS[current.stats["Habilidade"]]}</div>
+          <div><strong>Resistência:</strong> ${current.stats["Resistência"]} — ${RANKS[current.stats["Resistência"]]}</div>
+          <div style="margin-top:8px;"><strong>Recomendação:</strong> ${current.rec}</div>
+        </div>
+      `;
+    }
+
+    function generateIVs() {
+      const isLegendary = scaleEl.value === "lendario";
+      const isPseudo = !isLegendary && pseudoEl.checked;
+      let priorityOrder = resolvePriority();
+
+      if (!primaryEl.value && !secondaryEl.value && !tertiaryEl.value) {
+        priorityOrder = shuffle(ATTRS);
+      }
+
+      const { raw, adjusted } = generateRolls(priorityOrder, isLegendary, isPseudo);
+      const stats = assignStats(adjusted, priorityOrder);
+      const rec = recommendation(stats);
+
+      const payload = {
+        stats,
+        raw,
+        adjusted,
+        priorityOrder,
+        isLegendary,
+        isPseudo,
+        rec
+      };
+
+      resultArea.innerHTML = buildResultHTML(payload);
+
+      saveHistory({
+        stats,
+        rec,
+        scaleLabel: isLegendary ? "Radiante ou Lendário" : (isPseudo ? "Básico com Pseudo-Lendário" : "Básico")
+      });
+
+      renderHistory();
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", generateIVs);
+
+    document.getElementById("clearHistoryBtn").addEventListener("click", () => {
+      localStorage.removeItem("ivs_history_single");
+      renderHistory();
+    });
+
+    scaleEl.addEventListener("change", updatePseudoState);
+
+    updatePseudoState();
+    renderHistory();
+  </script>
+</body>
+</html>

@@ -1,1 +1,49 @@
-
+{
+  "pokemons": [
+    {
+      "id": 1,
+      "name": "Bulbasaur",
+      "image": "assets/pokemons/bulbasaur.jpg",
+      "moveSet": "Folha Navalha, Raio Solar, Doce Veneno, Sintese"
+    },
+    {
+      "id": 2,
+      "name": "Charmander",
+      "image": "assets/pokemons/charmander.jpg",
+      "moveSet": "Brasa, Garra Sombria, Presa de Fogo, Fúria Dragão"
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "name": "Potion",
+      "image": "assets/items/potion.png",
+      "description": "Restaura 20 PS de um Pokémon.",
+      "rarity": "Comum"
+    },
+    {
+      "id": 2,
+      "name": "Master Ball",
+      "image": "assets/items/masterball.png",
+      "description": "Captura qualquer Pokémon selvagem sem chance de falha.",
+      "rarity": "Lendário"
+    }
+  ],
+  "berries": [
+    {
+      "id": 1,
+      "name": "Cheri Berry",
+      "image": "assets/berries/cheri.png",
+      "description": "Cura paralisia.",
+      "rarity": "Comum"
+    }
+  ],
+  "moves": [
+    {
+      "id": 1,
+      "name": "Thunderbolt",
+      "icon": "assets/moves/eletric.png",
+      "description": "Poder 90, 15 PP, 100% acerto. Pode paralisar."
+    }
+  ]
+}

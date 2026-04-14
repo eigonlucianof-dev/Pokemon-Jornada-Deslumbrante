@@ -5,14 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ferramentas</title>
   <link rel="icon" type="image/png" href="logo_jornada_deslumbrante-removebg-preview.png">
-
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       background: #000;
       color: white;
-      font-family: Arial;
+      font-family: Arial, Helvetica, sans-serif;
       text-align: center;
-      padding: 30px;
+      padding: 0 20px 30px;
+      margin: 0;
+    }
+
+    /* ========== MENU PRINCIPAL (VERDE) ========== */
+    .menu-principal {
+      background: #111111;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 20px;
+      border-bottom: 1px solid #22c55e;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 30px;
+    }
+
+    .menu-principal::-webkit-scrollbar {
+      height: 4px;
+    }
+    .menu-principal::-webkit-scrollbar-track {
+      background: #222;
+      border-radius: 4px;
+    }
+    .menu-principal::-webkit-scrollbar-thumb {
+      background: #22c55e;
+      border-radius: 4px;
+    }
+
+    .menu-principal a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      padding: 10px 18px;
+      border-radius: 999px;
+      transition: 0.2s;
+      background: #1a1a1a;
+      border: 1px solid #22c55e;
+      flex-shrink: 0;
+    }
+
+    .menu-principal a:hover {
+      background: #22c55e;
+      color: black;
+      transform: translateY(-1px);
+    }
+
+    .menu-principal.escondido {
+      transform: translateY(-100%);
     }
 
     h1 {
@@ -27,9 +89,25 @@
       border-radius: 12px;
       display: inline-block;
       margin: 15px;
+      width: 280px;
+      transition: transform 0.2s;
     }
 
-    a {
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: #ccc;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    .card a {
       display: inline-block;
       margin-top: 10px;
       background: #22c55e;
@@ -40,38 +118,74 @@
       font-weight: bold;
     }
 
-    a:hover {
+    .card a:hover {
       background: #16a34a;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 0 12px 20px;
+      }
+      .menu-principal {
+        padding: 12px 16px;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .menu-principal a {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- MENU COM SCROLL HORIZONTAL (VERDE) -->
+  <nav class="menu-principal">
+    <a href="index.html">Início</a>
+    <a href="apoiadores.html">Apoiadores</a>
+    <a href="jornada.html">Jornada</a>
+    <a href="ferramentas.html">Ferramentas</a>
+    <a href="Ferramentas-do-mestre.html">Mestre</a>
+    <a href="Pokedex/">Pokédex</a>
+  </nav>
 
   <h1>Ferramentas</h1>
 
   <div class="card">
     <h2>Adaptador de Movimentos</h2>
     <p>Ferramenta para adaptar golpes.</p>
-    <a href="Adaptador%20de%20Movimentos%20JD.html">
-      Abrir Ferramenta
-    </a>
+    <a href="Adaptador%20de%20Movimentos%20JD.html">Abrir Ferramenta</a>
   </div>
 
   <div class="card">
     <h2>Teste Rápido</h2>
     <p>Ferramenta de testes rápidos para o sistema JD.</p>
-    <a href="Teste%20r%C3%A1pido%20JD.html">
-      Abrir Ferramenta
-    </a>
+    <a href="Teste%20r%C3%A1pido%20JD.html">Abrir Ferramenta</a>
   </div>
 
-    <div class="card">
+  <div class="card">
     <h2>Gerador de IVs</h2>
     <p>Distribuidor de atributos para um Pokémon.</p>
-    <a href="gerador-de-ivs-pokemon-jornada-deslumbrante.html">
-      Gerar Atributos
-    </a>
+    <a href="gerador-de-ivs-pokemon-jornada-deslumbrante.html">Gerar Atributos</a>
   </div>
 
+  <script>
+    // Script para ocultar o menu ao rolar para baixo
+    (function() {
+      const menu = document.querySelector('.menu-principal');
+      if (!menu) return;
+      let ultimoScroll = window.scrollY;
+      window.addEventListener('scroll', function() {
+        const atualScroll = window.scrollY;
+        if (atualScroll > ultimoScroll && atualScroll > 80) {
+          menu.classList.add('escondido');
+        } else {
+          menu.classList.remove('escondido');
+        }
+        ultimoScroll = atualScroll;
+      });
+    })();
+  </script>
 </body>
 </html>

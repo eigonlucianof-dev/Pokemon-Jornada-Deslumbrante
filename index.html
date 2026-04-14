@@ -58,7 +58,7 @@
     nav {
       background: #111111;
       display: flex;
-      justify-content: flex-start;   /* alinha à esquerda */
+      justify-content: flex-start;
       align-items: center;
       gap: 12px;
       padding: 15px 20px;
@@ -73,21 +73,10 @@
       overflow-x: auto;
       flex-wrap: nowrap;
       white-space: nowrap;
-      scrollbar-width: thin;        /* Firefox */
-      -webkit-overflow-scrolling: touch;  /* suavidade no iOS */
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* Esconde a barra de rolagem (mas mantém a função) – opcional, tira os comentários se quiser */
-    /*
-    nav::-webkit-scrollbar {
-      display: none;
-    }
-    nav {
-      scrollbar-width: none;
-    }
-    */
-
-    /* Estilização leve da barra (aparece só quando arrasta) */
     nav::-webkit-scrollbar {
       height: 4px;
     }
@@ -109,13 +98,18 @@
       transition: 0.2s;
       background: #1a1a1a;
       border: 1px solid var(--green);
-      flex-shrink: 0;       /* impede que os links encolham */
+      flex-shrink: 0;
     }
 
     nav a:hover {
       background: var(--green);
       color: black;
       transform: translateY(-1px);
+    }
+
+    /* CLASSE PARA ESCONDER O MENU */
+    nav.escondido {
+      transform: translateY(-100%);
     }
 
     .container {
@@ -223,15 +217,16 @@
     <p>Pokémon Jornada Deslumbrante © 2026</p>
   </header>
 
-  <!-- Nav com scroll horizontal no celular -->
-<nav class="menu-principal">
-  <a href="index.html">Início</a>
-  <a href="apoiadores.html">Apoiadores</a>
-  <a href="jornada.html">Jornada</a>
-  <a href="ferramentas.html">Ferramentas</a>
-  <a href="Ferramentas-do-mestre.html">Mestre</a>
-  <a href="Pokedex/">Pokédex</a>
-</nav>
+  <!-- Nav com scroll horizontal e ocultação -->
+  <nav class="menu-principal">
+    <a href="index.html">Início</a>
+    <a href="apoiadores.html">Apoiadores</a>
+    <a href="jornada.html">Jornada</a>
+    <a href="ferramentas.html">Ferramentas</a>
+    <a href="Ferramentas-do-mestre.html">Mestre</a>
+    <a href="Pokedex/">Pokédex</a>
+  </nav>
+
   <iframe
     class="ficha-frame"
     src="jornada_ficha_treinador.html"

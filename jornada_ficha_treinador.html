@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jornada Deslumbrante - Ficha do Treinador</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #101010;
+      --panel-2: #171717;
+      --text: #f5f5f5;
+      --muted: #bdbdbd;
+      --green: #22c55e;
+      --green-soft: rgba(34, 197, 94, 0.14);
+      --yellow: #facc15;
+      --yellow-soft: rgba(250, 204, 21, 0.14);
+      --red: #ef4444;
+      --red-soft: rgba(239, 68, 68, 0.14);
+      --blue: #3b82f6;
+      --blue-soft: rgba(59, 130, 246, 0.16);
+      --white-soft: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 18px 40px rgba(0,0,0,0.38);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, rgba(34,197,94,0.10), transparent 28%),
+                  linear-gradient(180deg, #000000, #0a0a0a 30%, #050505 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .container {
+      width: min(1220px, calc(100% - 24px));
+      margin: 24px auto 40px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(250,204,21,0.12));
+      border: 1px solid rgba(34,197,94,0.28);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+    .hero p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .save-status {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(250,204,21,0.22);
+      border-radius: 999px;
+      color: #fff9d0;
+      font-size: 0.94rem;
+    }
+    .section {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .section-title h2 { margin: 0; font-size: 1.2rem; color: white; }
+    .hint { color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
+    .grid-2, .grid-3, .grid-6 {
+      display: grid;
+      gap: 16px;
+    }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .field, .upload-card, .technique-card, .pokemon-card, .pc-card, .item-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .mini-attrs {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0 6px;
+      align-items: center;
+    }
+    .mini-attrs label {
+      font-size: 0.7rem;
+      margin: 0;
+      width: auto;
+    }
+    .mini-attrs input {
+      width: 55px;
+      text-align: center;
+      padding: 6px 4px;
+      font-size: 0.85rem;
+    }
+    .vigor-bar-container {
+      margin: 8px 0;
+      background: #2a2a2a;
+      border-radius: 12px;
+      height: 12px;
+      overflow: hidden;
+    }
+    .vigor-bar-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #facc15);
+      transition: width 0.2s;
+    }
+    .vigor-controls {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .vigor-btn {
+      background: #1f1f1f;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .vigor-btn:hover { background: #333; }
+    .expanding-textarea {
+      resize: vertical;
+      overflow-y: hidden;
+      transition: height 0.05s ease;
+    }
+    .field label, .upload-card label, .technique-card label, .pokemon-card label, .pc-card label, .item-card label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #f3f3f3;
+    }
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%;
+      padding: 12px 13px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.35);
+      color: white;
+      outline: none;
+      font-size: 0.98rem;
+    }
+    input[type="number"] { -moz-appearance: textfield; }
+    input[type="number"]::-webkit-inner-spin-button { opacity: 0.5; }
+    textarea { min-height: 70px; }
+    input[type="file"] { width: 100%; color: var(--muted); }
+    .preview {
+      width: 100%;
+      aspect-ratio: 2253 / 3123;
+      margin-top: 12px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.22));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .preview img { width: 100%; height: 100%; object-fit: cover; }
+    .badge {
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+    }
+    .badge.green { color: #b9ffd0; border-color: rgba(34,197,94,0.34); background: var(--green-soft); }
+    .badge.yellow { color: #fff1a8; border-color: rgba(250,204,21,0.34); background: var(--yellow-soft); }
+    .badge.blue { color: #cfe2ff; border-color: rgba(59,130,246,0.34); background: var(--blue-soft); }
+    .badge.red { color: #ffd0d0; border-color: rgba(239,68,68,0.34); background: var(--red-soft); }
+    .btn, .small-btn {
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: transform 0.15s ease;
+    }
+    .btn:hover, .small-btn:hover { transform: translateY(-1px); }
+    .btn { padding: 12px 16px; background: linear-gradient(90deg, var(--green), var(--yellow)); color: #071005; }
+    .btn.secondary { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.12); }
+    .small-btn { padding: 9px 12px; background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.1); }
+    .small-btn.danger { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.22); color: #ffd9d9; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+    .techniques-wrap, .bag-wrap, .pokemon-grid, .pc-grid { display: grid; gap: 14px; }
+    .team-status-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .team-slot { padding: 14px 10px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); text-align: center; background: rgba(255,255,255,0.03); }
+    .team-circle {
+      width: 34px;
+      height: 34px;
+      margin: 0 auto 8px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.45);
+      background: transparent;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .team-circle:hover { transform: scale(1.05); }
+    .team-circle.active { background: var(--green); border-color: rgba(34,197,94,0.95); }
+    .team-circle.exhausted { background: var(--yellow); border-color: rgba(250,204,21,0.95); }
+    .team-circle.fainted { background: var(--red); border-color: rgba(239,68,68,0.95); }
+    .team-caption { font-size: 0.85rem; color: var(--muted); }
+    .pokemon-card.state-empty { border-color: rgba(255,255,255,0.18); }
+    .pokemon-card.state-active { border-color: rgba(34,197,94,0.55); }
+    .pokemon-card.state-exhausted { border-color: rgba(250,204,21,0.55); }
+    .pokemon-card.state-fainted { border-color: rgba(239,68,68,0.55); }
+    .pc-section { border-color: rgba(59,130,246,0.34); background: linear-gradient(180deg, rgba(59,130,246,0.08), rgba(255,255,255,0.02)); }
+    .pc-grid.locked { opacity: 0.42; pointer-events: none; filter: grayscale(0.2); }
+    .inline-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .radio-box { display: inline-flex; gap: 8px; align-items: center; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+    .mini-note { margin-top: 8px; color: var(--muted); font-size: 0.84rem; }
+    .footer-note { color: var(--muted); font-size: 0.9rem; margin-top: 12px; }
+    .action-points {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      min-height: 40px;
+    }
+    .ap-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 2px solid rgba(250,204,21,0.65);
+      background: rgba(250,204,21,0.10);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .ap-dot.used {
+      background: rgba(250,204,21,0.95);
+      box-shadow: 0 0 18px rgba(250,204,21,0.28);
+    }
+    @media (max-width: 980px) {
+      .grid-2, .grid-3, .grid-6, .team-status-row, .pokemon-grid, .pc-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .grid-2, .grid-3, .grid-6, .team-status-row, .pokemon-grid, .pc-grid { grid-template-columns: 1fr; }
+      .container { width: min(100%, calc(100% - 16px)); }
+      .hero, .section { padding: 14px; }
+      .mini-attrs input { width: 45px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <section class="hero">
+    <h1>Ficha do Treinador — Jornada Deslumbrante</h1>
+    <p>Versão com salvamento local por IndexedDB. As imagens, técnicas, PA, mochila e equipe ficam guardados no próprio navegador do jogador.</p>
+    <div class="save-status" id="saveStatus">Banco local iniciando...</div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Backup local completo</h2><div class="toolbar"><button class="btn" id="exportBtn">Exportar backup</button><button class="btn secondary" id="importBtn">Importar backup</button><input type="file" id="importFile" accept="application/json" hidden /></div></div>
+    <div class="hint">O backup exporta dados e imagens juntos em um único arquivo JSON.</div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Ficha do treinador</h2><span class="badge green">Frente obrigatória • verso opcional</span></div>
+    <div class="grid-2">
+      <div class="upload-card"><div class="upload-top"><strong>Frente da ficha</strong><button class="small-btn danger remove-image-btn" data-image-key="trainerFront">Remover</button></div><label for="trainerFront">Anexar imagem</label><input id="trainerFront" type="file" accept="image/*" /><div class="preview" id="preview-trainerFront"><span>Nenhuma imagem</span></div></div>
+      <div class="upload-card"><div class="upload-top"><strong>Verso da ficha</strong><button class="small-btn danger remove-image-btn" data-image-key="trainerBack">Remover</button></div><label for="trainerBack">Anexar imagem</label><input id="trainerBack" type="file" accept="image/*" /><div class="preview" id="preview-trainerBack"><span>Nenhuma imagem</span></div></div>
+    </div>
+    <!-- Atributos do treinador -->
+    <div class="grid-2" style="margin-top: 20px;">
+      <div class="field"><label>Poder (0-50)</label><input type="number" id="trainerPoder" min="0" max="50" value="0" step="1"></div>
+      <div class="field"><label>Habilidade (0-50)</label><input type="number" id="trainerHabilidade" min="0" max="50" value="0" step="1"></div>
+      <div class="field"><label>Resistência (0-50)</label><input type="number" id="trainerResistencia" min="0" max="50" value="0" step="1"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Técnicas do treinador</h2><button class="btn" id="addTechniqueBtn">Adicionar nova técnica</button></div>
+    <div class="techniques-wrap" id="techniquesWrap"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Pontos de ação</h2><button class="btn secondary" id="renewApBtn">Renovar</button></div>
+    <div class="grid-2">
+      <div class="field"><label>Quantidade de PA</label><input id="apTotal" type="number" min="0" max="50" /></div>
+      <div class="field"><label>Uso durante a sessão</label><div class="action-points" id="apDots"></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Equipe atual</h2><span class="hint">Clique nos círculos para alternar estado</span></div>
+    <div class="team-status-row" id="teamStatusRow"></div>
+  </section>
+
+  <!-- Poke Points (apenas input, sem botões) -->
+  <section class="section">
+    <div class="section-title"><h2>Poke Points</h2><span class="badge yellow">0 a 100</span></div>
+    <div class="field"><label>Valor atual</label><input type="number" id="pokePoints" min="0" max="100" value="0" step="1"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Mochila do treinador</h2><span class="badge yellow">12 espaços</span></div>
+    <div class="grid-3" id="bagWrap"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Anotações gerais</h2><span class="badge white">Expansível</span></div>
+    <textarea id="generalNotes" class="expanding-textarea" placeholder="Anote lembretes, combinações..."></textarea>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><h2>Fichas dos Pokémon</h2><span class="hint">Atributos (0-6) e vigor (0-8)</span></div>
+    <div class="pokemon-grid grid-3" id="pokemonGrid"></div>
+  </section>
+
+  <section class="section pc-section">
+    <div class="section-title"><h2>No computador</h2><div class="inline-row"><strong>Poké-Tec</strong><label class="radio-box"><input type="radio" name="pcEnabled" value="nao" checked /> Não</label><label class="radio-box"><input type="radio" name="pcEnabled" value="sim" /> Sim</label></div></div>
+    <div class="hint">Quando Poké-Tec estiver em “Sim”, os slots são liberados.</div>
+    <div class="pc-grid grid-3 locked" id="pcGrid"></div>
+  </section>
+
+  <p class="footer-note">Os dados ficam guardados no navegador atual. Exporte para levar a ficha.</p>
+</div>
+
+<script>
+  (function() {
+    // ---------- CONFIGURAÇÃO ----------
+    const DB_NAME = 'jornadaDeslumbranteDB';
+    const DB_VERSION = 1;
+    const STATE_KEY = 'trainerState';
+    const MAX_IMAGE_SIZE = 1600;
+    const JPEG_QUALITY = 0.86;
+
+    const defaultState = {
+      techniques: [{ id: uid(), name: '', description: '' }],
+      apTotal: 0,
+      apUsed: [],
+      teamStates: Array(6).fill('empty'),
+      bagItems: Array(12).fill(''),
+      generalNotes: '',
+      pokemonConditions: Array(6).fill(''),
+      pokemonMoveNotes: Array(6).fill(''),
+      pcEnabled: false,
+      pcConditions: Array(6).fill(''),
+      pcMoveNotes: Array(6).fill(''),
+      trainerStats: { poder: 0, habilidade: 0, resistencia: 0 },
+      pokePoints: 0,
+      pokemonStats: Array(6).fill(null).map(() => ({ poder: 0, habilidade: 0, resistencia: 0 })),
+      pokemonVigor: Array(6).fill(8),
+      pcStats: Array(6).fill(null).map(() => ({ poder: 0, habilidade: 0, resistencia: 0 })),
+      pcVigor: Array(6).fill(8)
+    };
+
+    let db = null;
+    let state = structuredClone(defaultState);
+    let previewUrls = new Map();
+    let saveTimer = null;
+
+    // DOM elements
+    const saveStatus = document.getElementById('saveStatus');
+    const techniquesWrap = document.getElementById('techniquesWrap');
+    const apTotalInput = document.getElementById('apTotal');
+    const apDots = document.getElementById('apDots');
+    const teamStatusRow = document.getElementById('teamStatusRow');
+    const bagWrap = document.getElementById('bagWrap');
+    const generalNotes = document.getElementById('generalNotes');
+    const pokemonGrid = document.getElementById('pokemonGrid');
+    const pcGrid = document.getElementById('pcGrid');
+    const addTechniqueBtn = document.getElementById('addTechniqueBtn');
+    const renewApBtn = document.getElementById('renewApBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+    const trainerPoder = document.getElementById('trainerPoder');
+    const trainerHabilidade = document.getElementById('trainerHabilidade');
+    const trainerResistencia = document.getElementById('trainerResistencia');
+    const pokePointsInput = document.getElementById('pokePoints');
+
+    const trainerImageKeys = ['trainerFront', 'trainerBack'];
+    const pokemonImageKeys = Array.from({ length: 6 }, (_, i) => `pokemon-${i}`);
+    const pcImageKeys = Array.from({ length: 6 }, (_, i) => `pc-${i}`);
+    const allImageKeys = [...trainerImageKeys, ...pokemonImageKeys, ...pcImageKeys];
+
+    const CONDITION_OPTIONS = [
+      { value: '', label: 'Nenhuma' },
+      { value: 'Paralisado', label: 'Paralisado' },
+      { value: 'Envenenado', label: 'Envenenado' },
+      { value: 'Queimado', label: 'Queimado' },
+      { value: 'Confuso', label: 'Confuso' },
+      { value: 'Adormecido', label: 'Adormecido' }
+    ];
+
+    function uid() { return Math.random().toString(36).slice(2, 11); }
+    function setStatus(msg) { saveStatus.textContent = msg; }
+
+    // IndexedDB helpers
+    function openDb() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = () => {
+          const dbInst = req.result;
+          if (!dbInst.objectStoreNames.contains('state')) dbInst.createObjectStore('state');
+          if (!dbInst.objectStoreNames.contains('images')) dbInst.createObjectStore('images');
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    function tx(storeNames, mode = 'readonly') { return db.transaction(storeNames, mode); }
+    function idbGet(store, key) {
+      return new Promise((resolve, reject) => {
+        const req = tx([store]).objectStore(store).get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+    function idbPut(store, value, key) {
+      return new Promise((resolve, reject) => {
+        const req = tx([store], 'readwrite').objectStore(store).put(value, key);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+    function idbDelete(store, key) {
+      return new Promise((resolve, reject) => {
+        const req = tx([store], 'readwrite').objectStore(store).delete(key);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function fileToImageBitmap(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error()); };
+        img.src = url;
+      });
+    }
+    async function compressImage(file) {
+      const image = await fileToImageBitmap(file);
+      const ratio = Math.min(1, MAX_IMAGE_SIZE / Math.max(image.width, image.height));
+      const width = Math.round(image.width * ratio);
+      const height = Math.round(image.height * ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0, width, height);
+      return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY));
+    }
+    function blobToDataURL(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(blob);
+      });
+    }
+    function dataURLToBlob(dataURL) {
+      const [header, data] = dataURL.split(',');
+      const mime = header.match(/data:(.*?);base64/)[1];
+      const binary = atob(data);
+      const array = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) array[i] = binary.charCodeAt(i);
+      return new Blob([array], { type: mime });
+    }
+    function revokePreview(key) {
+      const old = previewUrls.get(key);
+      if (old) { URL.revokeObjectURL(old); previewUrls.delete(key); }
+    }
+    async function renderStoredPreview(key, previewId, emptyText) {
+      const preview = document.getElementById(previewId);
+      const blob = await idbGet('images', key);
+      revokePreview(key);
+      if (!blob) { preview.innerHTML = `<span>${emptyText}</span>`; return; }
+      const url = URL.createObjectURL(blob);
+      previewUrls.set(key, url);
+      preview.innerHTML = `<img src="${url}" alt="">`;
+    }
+    async function updateAllPreviews() {
+      await renderStoredPreview('trainerFront', 'preview-trainerFront', 'Nenhuma imagem');
+      await renderStoredPreview('trainerBack', 'preview-trainerBack', 'Nenhuma imagem');
+      for (let i = 0; i < 6; i++) {
+        await renderStoredPreview(`pokemon-${i}`, `preview-pokemon-${i}`, 'Nenhuma ficha');
+        await renderStoredPreview(`pc-${i}`, `preview-pc-${i}`, 'Nenhum Pokémon');
+      }
+      updatePcCardStates();
+    }
+
+    function safeState() {
+      const next = structuredClone(defaultState);
+      const incoming = state || {};
+      next.techniques = Array.isArray(incoming.techniques) ? incoming.techniques.map(t => ({ id: t.id || uid(), name: t.name || '', description: t.description || '' })) : [{ id: uid(), name: '', description: '' }];
+      next.apTotal = Math.min(50, Math.max(0, Number(incoming.apTotal) || 0));
+      next.apUsed = Array.isArray(incoming.apUsed) ? incoming.apUsed.filter(Boolean).slice(0, next.apTotal) : [];
+      next.teamStates = Array(6).fill('empty').map((_, i) => incoming.teamStates?.[i] || 'empty');
+      next.bagItems = Array(12).fill('').map((_, i) => incoming.bagItems?.[i] || '');
+      next.generalNotes = typeof incoming.generalNotes === 'string' ? incoming.generalNotes : '';
+      next.pokemonConditions = Array(6).fill('').map((_, i) => incoming.pokemonConditions?.[i] || '');
+      next.pokemonMoveNotes = Array(6).fill('').map((_, i) => incoming.pokemonMoveNotes?.[i] || '');
+      next.pcEnabled = !!incoming.pcEnabled;
+      next.pcConditions = Array(6).fill('').map((_, i) => incoming.pcConditions?.[i] || '');
+      next.pcMoveNotes = Array(6).fill('').map((_, i) => incoming.pcMoveNotes?.[i] || '');
+      next.trainerStats = {
+        poder: Math.min(50, Math.max(0, Number(incoming.trainerStats?.poder) || 0)),
+        habilidade: Math.min(50, Math.max(0, Number(incoming.trainerStats?.habilidade) || 0)),
+        resistencia: Math.min(50, Math.max(0, Number(incoming.trainerStats?.resistencia) || 0))
+      };
+      next.pokePoints = Math.min(100, Math.max(0, Number(incoming.pokePoints) || 0));
+      next.pokemonStats = Array(6).fill().map((_, i) => ({
+        poder: Math.min(6, Math.max(0, Number(incoming.pokemonStats?.[i]?.poder) || 0)),
+        habilidade: Math.min(6, Math.max(0, Number(incoming.pokemonStats?.[i]?.habilidade) || 0)),
+        resistencia: Math.min(6, Math.max(0, Number(incoming.pokemonStats?.[i]?.resistencia) || 0))
+      }));
+      next.pokemonVigor = Array(6).fill(8).map((_, i) => Math.min(8, Math.max(0, Number(incoming.pokemonVigor?.[i]) || 8)));
+      next.pcStats = Array(6).fill().map((_, i) => ({
+        poder: Math.min(6, Math.max(0, Number(incoming.pcStats?.[i]?.poder) || 0)),
+        habilidade: Math.min(6, Math.max(0, Number(incoming.pcStats?.[i]?.habilidade) || 0)),
+        resistencia: Math.min(6, Math.max(0, Number(incoming.pcStats?.[i]?.resistencia) || 0))
+      }));
+      next.pcVigor = Array(6).fill(8).map((_, i) => Math.min(8, Math.max(0, Number(incoming.pcVigor?.[i]) || 8)));
+      return next;
+    }
+
+    async function saveState() {
+      state = safeState();
+      await idbPut('state', state, STATE_KEY);
+      setStatus('Salvo.');
+    }
+    function queueSave(msg = 'Salvando...') {
+      setStatus(msg);
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async () => {
+        try { await saveState(); } catch(e) { setStatus('Falha ao salvar.'); }
+      }, 180);
+    }
+
+    // ---------- FUNÇÕES DE RENDERIZAÇÃO ----------
+    function renderTechniques() {
+      techniquesWrap.innerHTML = '';
+      state.techniques.forEach((tech, idx) => {
+        const card = document.createElement('div');
+        card.className = `technique-card ${idx === 0 ? 'featured' : ''}`;
+        card.innerHTML = `
+          <div class="card-top">
+            <strong>${idx === 0 ? 'Técnica em destaque' : `Técnica ${idx + 1}`}</strong>
+            <button class="small-btn danger" ${state.techniques.length === 1 ? 'disabled' : ''}>Remover</button>
+          </div>
+          <label>Nome da técnica</label>
+          <input type="text" value="${escapeHtml(tech.name)}" placeholder="Ex.: Liderança Selvagem" />
+          <label style="margin-top:12px;">Descrição</label>
+          <textarea placeholder="Descreva a técnica...">${escapeHtml(tech.description)}</textarea>
+        `;
+        const removeBtn = card.querySelector('button');
+        const nameInput = card.querySelector('input');
+        const descArea = card.querySelector('textarea');
+        removeBtn.addEventListener('click', () => {
+          if (state.techniques.length === 1) return;
+          state.techniques.splice(idx, 1);
+          renderTechniques();
+          queueSave();
+        });
+        nameInput.addEventListener('input', (e) => { state.techniques[idx].name = e.target.value; queueSave(); });
+        descArea.addEventListener('input', (e) => { state.techniques[idx].description = e.target.value; queueSave(); });
+        techniquesWrap.appendChild(card);
+      });
+    }
+
+    function renderAp() {
+      apTotalInput.value = state.apTotal;
+      apDots.innerHTML = '';
+      const total = state.apTotal;
+      if (state.apUsed.length > total) state.apUsed = state.apUsed.slice(0, total);
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = `ap-dot ${state.apUsed[i] ? 'used' : ''}`;
+        dot.addEventListener('click', () => {
+          if (!state.apUsed[i]) {
+            state.apUsed[i] = true;
+            renderAp();
+            queueSave();
+          }
+        });
+        apDots.appendChild(dot);
+      }
+    }
+
+    function renderTeamStatus() {
+      teamStatusRow.innerHTML = '';
+      state.teamStates.forEach((slotState, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'team-slot';
+        const circle = document.createElement('button');
+        circle.type = 'button';
+        circle.className = `team-circle ${slotState === 'active' ? 'active' : slotState === 'exhausted' ? 'exhausted' : slotState === 'fainted' ? 'fainted' : ''}`;
+        circle.addEventListener('click', () => {
+          const order = ['empty', 'active', 'exhausted', 'fainted'];
+          const cur = state.teamStates[idx] || 'empty';
+          const next = order[(order.indexOf(cur) + 1) % order.length];
+          state.teamStates[idx] = next;
+          renderTeamStatus();
+          renderPokemonGrid(); // atualiza bordas dos Pokémon
+          queueSave();
+        });
+        const caption = document.createElement('div');
+        caption.className = 'team-caption';
+        caption.textContent = `Pokémon ${idx + 1} — ${slotState === 'active' ? 'Ativo' : slotState === 'exhausted' ? 'Exausto' : slotState === 'fainted' ? 'Desmaiado' : 'Vazio'}`;
+        wrapper.appendChild(circle);
+        wrapper.appendChild(caption);
+        teamStatusRow.appendChild(wrapper);
+      });
+    }
+
+    function renderBag() {
+      bagWrap.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `<label>Item ${i + 1}</label><input type="text" value="${escapeHtml(state.bagItems[i] || '')}" placeholder="Ex.: Potion" />`;
+        const inp = card.querySelector('input');
+        inp.addEventListener('input', (e) => { state.bagItems[i] = e.target.value; queueSave(); });
+        bagWrap.appendChild(card);
+      }
+    }
+
+    function pokemonStateClass(v) {
+      if (v === 'active') return 'state-active';
+      if (v === 'exhausted') return 'state-exhausted';
+      if (v === 'fainted') return 'state-fainted';
+      return 'state-empty';
+    }
+
+    function conditionOptions(selected) {
+      return CONDITION_OPTIONS.map(o => `<option value="${o.value}" ${selected === o.value ? 'selected' : ''}>${o.label}</option>`).join('');
+    }
+
+    function updateVigorUI(type, idx) {
+      const container = type === 'pokemon' ? pokemonGrid : pcGrid;
+      const card = container.querySelector(`[data-idx="${idx}"]`);
+      if (!card) return;
+      const vigorVal = type === 'pokemon' ? state.pokemonVigor[idx] : state.pcVigor[idx];
+      const bar = card.querySelector('.vigor-bar-fill');
+      const span = card.querySelector('.vigor-value');
+      if (bar) bar.style.width = `${(vigorVal / 8) * 100}%`;
+      if (span) span.textContent = vigorVal;
+    }
+
+    function renderPokemonGrid() {
+      pokemonGrid.innerHTML = '';
+      for (let i = 0; i < 6; i++) {
+        const teamState = state.teamStates[i] || 'empty';
+        const card = document.createElement('div');
+        card.className = `pokemon-card ${pokemonStateClass(teamState)}`;
+        card.setAttribute('data-idx', i);
+        card.innerHTML = `
+          <div class="card-top">
+            <strong>Pokémon ${i + 1}</strong>
+            ${teamState === 'active' ? '<span class="badge green">Saudável/ativo</span>' : teamState === 'exhausted' ? '<span class="badge yellow">Exausto</span>' : teamState === 'fainted' ? '<span class="badge red">Desmaiado</span>' : '<span class="badge white">Slot vazio</span>'}
+          </div>
+          <label>Ficha do Pokémon</label>
+          <input type="file" class="pokemon-file" data-idx="${i}" accept="image/*" />
+          <div class="toolbar"><button class="small-btn danger remove-image-btn" data-image-key="pokemon-${i}">Remover imagem</button></div>
+          <div class="preview" id="preview-pokemon-${i}"><span>Nenhuma ficha</span></div>
+          <div class="mini-attrs">
+            <label>P</label><input type="number" class="pokemon-attr" data-idx="${i}" data-attr="poder" min="0" max="6" value="${state.pokemonStats[i].poder}">
+            <label>H</label><input type="number" class="pokemon-attr" data-idx="${i}" data-attr="habilidade" min="0" max="6" value="${state.pokemonStats[i].habilidade}">
+            <label>R</label><input type="number" class="pokemon-attr" data-idx="${i}" data-attr="resistencia" min="0" max="6" value="${state.pokemonStats[i].resistencia}">
+          </div>
+          <div class="vigor-bar-container"><div class="vigor-bar-fill" style="width:${(state.pokemonVigor[i]/8)*100}%"></div></div>
+          <div>Vigor: <span class="vigor-value">${state.pokemonVigor[i]}</span>/8</div>
+          <div class="vigor-controls">
+            <button class="vigor-btn vigor-damage" data-type="pokemon" data-idx="${i}" data-dmg="1">Baixo</button>
+            <button class="vigor-btn vigor-damage" data-type="pokemon" data-idx="${i}" data-dmg="2">Normal</button>
+            <button class="vigor-btn vigor-damage" data-type="pokemon" data-idx="${i}" data-dmg="3">Alto</button>
+            <button class="vigor-btn vigor-heal" data-type="pokemon" data-idx="${i}">Restaurar</button>
+          </div>
+          <label style="margin-top:8px;">Condição especial</label>
+          <select class="pokemon-condition" data-idx="${i}">${conditionOptions(state.pokemonConditions[i])}</select>
+          <label style="margin-top:8px;">Perícias de Movimento</label>
+          <textarea class="pokemon-move-notes expanding-textarea" data-idx="${i}">${escapeHtml(state.pokemonMoveNotes[i])}</textarea>
+        `;
+        pokemonGrid.appendChild(card);
+      }
+      // eventos dos Pokémon
+      document.querySelectorAll('.pokemon-file').forEach(input => {
+        input.addEventListener('change', async (e) => {
+          const idx = parseInt(input.dataset.idx);
+          const file = e.target.files?.[0];
+          if (file) await saveImageKey(`pokemon-${idx}`, file, `preview-pokemon-${idx}`);
+          input.value = '';
+        });
+      });
+      document.querySelectorAll('.pokemon-attr').forEach(inp => {
+        inp.addEventListener('change', (e) => {
+          const idx = parseInt(inp.dataset.idx);
+          const attr = inp.dataset.attr;
+          let val = Math.min(6, Math.max(0, parseInt(inp.value) || 0));
+          state.pokemonStats[idx][attr] = val;
+          inp.value = val;
+          queueSave();
+        });
+      });
+      document.querySelectorAll('.pokemon-condition').forEach(sel => {
+        sel.addEventListener('change', (e) => {
+          const idx = parseInt(sel.dataset.idx);
+          state.pokemonConditions[idx] = sel.value;
+          queueSave();
+        });
+      });
+      document.querySelectorAll('.pokemon-move-notes').forEach(ta => {
+        ta.addEventListener('input', (e) => {
+          const idx = parseInt(ta.dataset.idx);
+          state.pokemonMoveNotes[idx] = ta.value;
+          queueSave();
+          makeExpanding(ta);
+        });
+        makeExpanding(ta);
+      });
+      // eventos de vigor
+      document.querySelectorAll('.vigor-damage').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.dataset.type;
+          const idx = parseInt(btn.dataset.idx);
+          const dmg = parseInt(btn.dataset.dmg);
+          let newVal;
+          if (type === 'pokemon') newVal = state.pokemonVigor[idx] - dmg;
+          else newVal = state.pcVigor[idx] - dmg;
+          newVal = Math.min(8, Math.max(0, newVal));
+          if (type === 'pokemon') state.pokemonVigor[idx] = newVal;
+          else state.pcVigor[idx] = newVal;
+          updateVigorUI(type, idx);
+          queueSave();
+        });
+      });
+      document.querySelectorAll('.vigor-heal').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.dataset.type;
+          const idx = parseInt(btn.dataset.idx);
+          let newVal;
+          if (type === 'pokemon') newVal = state.pokemonVigor[idx] + 1;
+          else newVal = state.pcVigor[idx] + 1;
+          newVal = Math.min(8, Math.max(0, newVal));
+          if (type === 'pokemon') state.pokemonVigor[idx] = newVal;
+          else state.pcVigor[idx] = newVal;
+          updateVigorUI(type, idx);
+          queueSave();
+        });
+      });
+    }
+
+    function renderPcGrid() {
+      pcGrid.classList.toggle('locked', !state.pcEnabled);
+      pcGrid.innerHTML = '';
+      for (let i = 0; i < 6; i++) {
+        const card = document.createElement('div');
+        card.className = 'pc-card';
+        card.setAttribute('data-idx', i);
+        card.id = `pc-card-${i}`;
+        card.innerHTML = `
+          <div class="card-top"><strong>Slot ${i + 1}</strong><span class="badge blue">Armazenado</span></div>
+          <label>Ficha no PC</label>
+          <input type="file" class="pc-file" data-idx="${i}" accept="image/*" ${state.pcEnabled ? '' : 'disabled'} />
+          <div class="toolbar"><button class="small-btn danger remove-image-btn" data-image-key="pc-${i}" ${state.pcEnabled ? '' : 'disabled'}>Remover</button></div>
+          <div class="preview" id="preview-pc-${i}"><span>Nenhum Pokémon</span></div>
+          <div class="mini-attrs">
+            <label>P</label><input type="number" class="pc-attr" data-idx="${i}" data-attr="poder" min="0" max="6" value="${state.pcStats[i].poder}" ${state.pcEnabled ? '' : 'disabled'}>
+            <label>H</label><input type="number" class="pc-attr" data-idx="${i}" data-attr="habilidade" min="0" max="6" value="${state.pcStats[i].habilidade}" ${state.pcEnabled ? '' : 'disabled'}>
+            <label>R</label><input type="number" class="pc-attr" data-idx="${i}" data-attr="resistencia" min="0" max="6" value="${state.pcStats[i].resistencia}" ${state.pcEnabled ? '' : 'disabled'}>
+          </div>
+          <div class="vigor-bar-container"><div class="vigor-bar-fill" style="width:${(state.pcVigor[i]/8)*100}%"></div></div>
+          <div>Vigor: <span class="vigor-value">${state.pcVigor[i]}</span>/8</div>
+          <div class="vigor-controls">
+            <button class="vigor-btn vigor-damage" data-type="pc" data-idx="${i}" data-dmg="1" ${state.pcEnabled ? '' : 'disabled'}>Baixo</button>
+            <button class="vigor-btn vigor-damage" data-type="pc" data-idx="${i}" data-dmg="2" ${state.pcEnabled ? '' : 'disabled'}>Normal</button>
+            <button class="vigor-btn vigor-damage" data-type="pc" data-idx="${i}" data-dmg="3" ${state.pcEnabled ? '' : 'disabled'}>Alto</button>
+            <button class="vigor-btn vigor-heal" data-type="pc" data-idx="${i}" ${state.pcEnabled ? '' : 'disabled'}>Restaurar</button>
+          </div>
+          <label style="margin-top:8px;">Condição especial</label>
+          <select class="pc-condition" data-idx="${i}" ${state.pcEnabled ? '' : 'disabled'}>${conditionOptions(state.pcConditions[i])}</select>
+          <label style="margin-top:8px;">Perícias de Movimento</label>
+          <textarea class="pc-move-notes expanding-textarea" data-idx="${i}" ${state.pcEnabled ? '' : 'disabled'}>${escapeHtml(state.pcMoveNotes[i])}</textarea>
+        `;
+        pcGrid.appendChild(card);
+      }
+      // eventos PC
+      document.querySelectorAll('.pc-file').forEach(input => {
+        input.addEventListener('change', async (e) => {
+          if (!state.pcEnabled) return;
+          const idx = parseInt(input.dataset.idx);
+          const file = e.target.files?.[0];
+          if (file) await saveImageKey(`pc-${idx}`, file, `preview-pc-${idx}`);
+          input.value = '';
+        });
+      });
+      document.querySelectorAll('.pc-attr').forEach(inp => {
+        inp.addEventListener('change', (e) => {
+          if (!state.pcEnabled) return;
+          const idx = parseInt(inp.dataset.idx);
+          const attr = inp.dataset.attr;
+          let val = Math.min(6, Math.max(0, parseInt(inp.value) || 0));
+          state.pcStats[idx][attr] = val;
+          inp.value = val;
+          queueSave();
+        });
+      });
+      document.querySelectorAll('.pc-condition').forEach(sel => {
+        sel.addEventListener('change', (e) => {
+          if (!state.pcEnabled) return;
+          const idx = parseInt(sel.dataset.idx);
+          state.pcConditions[idx] = sel.value;
+          queueSave();
+        });
+      });
+      document.querySelectorAll('.pc-move-notes').forEach(ta => {
+        ta.addEventListener('input', (e) => {
+          if (!state.pcEnabled) return;
+          const idx = parseInt(ta.dataset.idx);
+          state.pcMoveNotes[idx] = ta.value;
+          queueSave();
+          makeExpanding(ta);
+        });
+        makeExpanding(ta);
+      });
+      document.querySelectorAll('.vigor-damage, .vigor-heal').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!state.pcEnabled) return;
+          const type = btn.dataset.type;
+          const idx = parseInt(btn.dataset.idx);
+          let newVal;
+          if (btn.classList.contains('vigor-damage')) {
+            const dmg = parseInt(btn.dataset.dmg);
+            newVal = state.pcVigor[idx] - dmg;
+          } else {
+            newVal = state.pcVigor[idx] + 1;
+          }
+          newVal = Math.min(8, Math.max(0, newVal));
+          state.pcVigor[idx] = newVal;
+          updateVigorUI('pc', idx);
+          queueSave();
+        });
+      });
+    }
+
+    async function updatePcCardStates() {
+      for (let i = 0; i < 6; i++) {
+        const card = document.getElementById(`pc-card-${i}`);
+        if (card) {
+          const blob = await idbGet('images', `pc-${i}`);
+          card.classList.toggle('filled', Boolean(blob));
+        }
+      }
+    }
+
+    function bindRemoveButtons() {
+      document.querySelectorAll('.remove-image-btn').forEach(btn => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', async () => {
+          const key = btn.dataset.imageKey;
+          await removeImageKey(key);
+        });
+      });
+    }
+
+    async function saveImageKey(key, file, previewId) {
+      try {
+        setStatus('Processando imagem...');
+        const blob = await compressImage(file);
+        await idbPut('images', blob, key);
+        await renderStoredPreview(key, previewId, 'Nenhuma imagem');
+        updatePcCardStates();
+        setStatus('Imagem salva.');
+      } catch(e) { setStatus('Falha na imagem.'); }
+    }
+
+    async function removeImageKey(key) {
+      await idbDelete('images', key);
+      revokePreview(key);
+      if (key.startsWith('trainer')) {
+        document.getElementById(`preview-${key}`).innerHTML = '<span>Nenhuma imagem anexada.</span>';
+      } else if (key.startsWith('pokemon-')) {
+        const idx = key.split('-')[1];
+        document.getElementById(`preview-pokemon-${idx}`).innerHTML = '<span>Nenhuma ficha anexada.</span>';
+      } else if (key.startsWith('pc-')) {
+        const idx = key.split('-')[1];
+        document.getElementById(`preview-pc-${idx}`).innerHTML = '<span>Nenhum Pokémon armazenado.</span>';
+      }
+      await updatePcCardStates();
+      setStatus('Imagem removida.');
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+
+    async function exportBackup() {
+      try {
+        await saveState();
+        const exportData = { version: 2, exportedAt: new Date().toISOString(), state, images: {} };
+        for (const key of allImageKeys) {
+          const blob = await idbGet('images', key);
+          if (blob) exportData.images[key] = await blobToDataURL(blob);
+        }
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `jornada-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        setStatus('Backup exportado.');
+      } catch(e) { setStatus('Falha na exportação.'); }
+    }
+
+    async function importBackup(file) {
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        if (!parsed.state) throw new Error();
+        state = structuredClone(parsed.state);
+        state = safeState();
+        await idbPut('state', state, STATE_KEY);
+        for (const key of allImageKeys) await idbDelete('images', key);
+        for (const [key, dataURL] of Object.entries(parsed.images)) {
+          if (allImageKeys.includes(key)) await idbPut('images', dataURLToBlob(dataURL), key);
+        }
+        renderAll();
+        setStatus('Backup importado.');
+      } catch(e) { setStatus('Falha na importação.'); alert('Arquivo inválido.'); }
+    }
+
+    function makeExpanding(textarea) {
+      if (!textarea) return;
+      const adjust = () => {
+        textarea.style.height = 'auto';
+        textarea.style.height = Math.min(textarea.scrollHeight, 400) + 'px';
+      };
+      textarea.addEventListener('input', adjust);
+      setTimeout(adjust, 10);
+    }
+
+    function renderAll() {
+      state = safeState();
+      renderTechniques();
+      renderAp();
+      renderTeamStatus();
+      renderBag();
+      generalNotes.value = state.generalNotes;
+      makeExpanding(generalNotes);
+      renderPokemonGrid();
+      renderPcGrid();
+      document.querySelector(`input[name="pcEnabled"][value="${state.pcEnabled ? 'sim' : 'nao'}"]`).checked = true;
+      renderStoredPreview('trainerFront', 'preview-trainerFront', 'Nenhuma imagem');
+      renderStoredPreview('trainerBack', 'preview-trainerBack', 'Nenhuma imagem');
+      trainerPoder.value = state.trainerStats.poder;
+      trainerHabilidade.value = state.trainerStats.habilidade;
+      trainerResistencia.value = state.trainerStats.resistencia;
+      pokePointsInput.value = state.pokePoints;
+      bindRemoveButtons();
+    }
+
+    async function init() {
+      try {
+        db = await openDb();
+        const saved = await idbGet('state', STATE_KEY);
+        if (saved) state = saved;
+        renderAll();
+        await updateAllPreviews();
+        setStatus('Banco local pronto.');
+      } catch(e) { setStatus('Erro ao iniciar.'); }
+    }
+
+    function bindGlobalEvents() {
+      addTechniqueBtn.addEventListener('click', () => {
+        state.techniques.push({ id: uid(), name: '', description: '' });
+        renderTechniques();
+        queueSave();
+      });
+      apTotalInput.addEventListener('input', (e) => {
+        let v = Math.min(50, Math.max(0, Number(e.target.value) || 0));
+        state.apTotal = v;
+        if (state.apUsed.length > v) state.apUsed = state.apUsed.slice(0, v);
+        renderAp();
+        queueSave();
+      });
+      renewApBtn.addEventListener('click', () => {
+        state.apUsed = Array(state.apTotal).fill(false);
+        renderAp();
+        queueSave();
+      });
+      trainerImageKeys.forEach(key => {
+        document.getElementById(key).addEventListener('change', async (e) => {
+          const file = e.target.files?.[0];
+          if (file) await saveImageKey(key, file, `preview-${key}`);
+        });
+      });
+      generalNotes.addEventListener('input', (e) => {
+        state.generalNotes = e.target.value;
+        queueSave();
+        makeExpanding(generalNotes);
+      });
+      document.querySelectorAll('input[name="pcEnabled"]').forEach(inp => {
+        inp.addEventListener('change', (e) => {
+          state.pcEnabled = e.target.value === 'sim';
+          renderPcGrid();
+          queueSave();
+        });
+      });
+      exportBtn.addEventListener('click', exportBackup);
+      importBtn.addEventListener('click', () => importFile.click());
+      importFile.addEventListener('change', async (e) => {
+        if (e.target.files?.[0]) await importBackup(e.target.files[0]);
+        importFile.value = '';
+      });
+      trainerPoder.addEventListener('change', (e) => { state.trainerStats.poder = Math.min(50, Math.max(0, Number(e.target.value) || 0)); queueSave(); });
+      trainerHabilidade.addEventListener('change', (e) => { state.trainerStats.habilidade = Math.min(50, Math.max(0, Number(e.target.value) || 0)); queueSave(); });
+      trainerResistencia.addEventListener('change', (e) => { state.trainerStats.resistencia = Math.min(50, Math.max(0, Number(e.target.value) || 0)); queueSave(); });
+      pokePointsInput.addEventListener('change', (e) => { state.pokePoints = Math.min(100, Math.max(0, Number(e.target.value) || 0)); queueSave(); });
+    }
+
+    init();
+    bindGlobalEvents();
+  })();
+</script>
+</body>
+</html>

@@ -5,31 +5,127 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pokédex - Jornada Deslumbrante</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* ========== MENU PRINCIPAL (VERDE) ========== */
+    .menu-principal {
+      background: #111111;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 20px;
+      border-bottom: 1px solid #22c55e;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .menu-principal::-webkit-scrollbar {
+      height: 4px;
+    }
+    .menu-principal::-webkit-scrollbar-track {
+      background: #222;
+      border-radius: 4px;
+    }
+    .menu-principal::-webkit-scrollbar-thumb {
+      background: #22c55e;
+      border-radius: 4px;
+    }
+
+    .menu-principal a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      padding: 10px 18px;
+      border-radius: 999px;
+      transition: 0.2s;
+      background: #1a1a1a;
+      border: 1px solid #22c55e;
+      flex-shrink: 0;
+    }
+
+    .menu-principal a:hover {
+      background: #22c55e;
+      color: black;
+      transform: translateY(-1px);
+    }
+
+    .menu-principal.escondido {
+      transform: translateY(-100%);
+    }
+
+    /* Ajuste no container para não ficar colado no menu */
+    .container {
+      width: min(1220px, calc(100% - 24px));
+      margin: 24px auto 40px;
+    }
+
+    /* Hero e demais estilos já existem no style.css, mas garantimos que o menu não quebre */
+    body {
+      margin: 0;
+      background: #050505;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="hero">
-    <h1>Pokédex</h1>
-    <p>Consulta de Pokémon, Itens, Berries e Movimentos</p>
+
+  <!-- MENU COM SCROLL HORIZONTAL (VERDE) -->
+<nav class="menu-principal">
+  <a href="index.html">Início</a>
+  <a href="apoiadores.html">Apoiadores</a>
+  <a href="jornada.html">Jornada</a>
+  <a href="ferramentas.html">Ferramentas</a>
+  <a href="Ferramentas-do-mestre.html">Mestre</a>
+  <a href="Pokedex/">Pokédex</a>
+</nav>
+
+  <div class="container">
+    <div class="hero">
+      <h1>Pokédex</h1>
+      <p>Consulta de Pokémon, Itens, Berries e Movimentos</p>
+    </div>
+
+    <!-- Filtros e busca -->
+    <div class="filters-bar">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="pokemons">Pokémon</button>
+        <button class="filter-btn" data-filter="items">Itens</button>
+        <button class="filter-btn" data-filter="berries">Berries</button>
+        <button class="filter-btn" data-filter="moves">Movimentos</button>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Pesquisar por nome...">
+      </div>
+    </div>
+
+    <!-- Grid de cards -->
+    <div id="cardsGrid" class="cards-grid"></div>
   </div>
 
-  <!-- Filtros e busca -->
-  <div class="filters-bar">
-    <div class="filter-buttons">
-      <button class="filter-btn active" data-filter="pokemons">Pokémon</button>
-      <button class="filter-btn" data-filter="items">Itens</button>
-      <button class="filter-btn" data-filter="berries">Berries</button>
-      <button class="filter-btn" data-filter="moves">Movimentos</button>
-    </div>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Pesquisar por nome...">
-    </div>
-  </div>
-
-  <!-- Grid de cards -->
-  <div id="cardsGrid" class="cards-grid"></div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Script para ocultar o menu ao rolar para baixo
+    (function() {
+      const menu = document.querySelector('.menu-principal');
+      if (!menu) return;
+      let ultimoScroll = window.scrollY;
+      window.addEventListener('scroll', function() {
+        const atualScroll = window.scrollY;
+        if (atualScroll > ultimoScroll && atualScroll > 80) {
+          menu.classList.add('escondido');
+        } else {
+          menu.classList.remove('escondido');
+        }
+        ultimoScroll = atualScroll;
+      });
+    })();
+  </script>
 </body>
 </html>
